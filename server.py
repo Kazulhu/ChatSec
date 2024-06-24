@@ -2,26 +2,35 @@ import socket
 import threading
 import datetime
 import sqlite3
+import pyotp
+import qrcode
 import secrets
 import pyargon2
 
 # Initialisation des logs
 log_connections_file = 'log_connections.txt'
 log_messages_file = 'log_messages.txt'
+log_login_file = 'log_login.txt'
 
 # List to keep track of connected clients
 connected_clients = []
+username_to_address = {}
 clients_lock = threading.Lock()
 
 # Function to log connections
 def log_connection(client_address):
     with open(log_connections_file, 'a') as log_file:
         log_file.write(f'{datetime.datetime.now()} - Connection from {client_address[0]}:{client_address[1]}\n')
+        print(f'{datetime.datetime.now()} - Connection from {client_address[0]}:{client_address[1]}\n')
 
 # Function to log disconnections
-def log_disconnection(username, client_address):
-    with open(log_connections_file, 'a') as log_file:
-        log_file.write(f'{datetime.datetime.now()} - Disconnection of {username} ({client_address[0]}:{client_address[1]})\n')
+def log_disconnection(client_address, username=None):
+    if username!=None:
+        with open(log_connections_file, 'a') as log_file:
+            log_file.write(f'{datetime.datetime.now()} - Disconnection of {username} ({client_address[0]}:{client_address[1]})\n')
+    else:
+        with open(log_connections_file, 'a') as log_file:
+            log_file.write(f'{datetime.datetime.now()} - Disconnected from ({client_address[0]}:{client_address[1]})\n')
 
 # Function to log messages
 def log_message(message):
@@ -40,18 +49,19 @@ class UserManager:
                 CREATE TABLE IF NOT EXISTS users (
                     username TEXT PRIMARY KEY,
                     hashed_password TEXT NOT NULL,
-                    salt TEXT NOT NULL
+                    salt TEXT NOT NULL,
+                    secret TEXT NOT NULL
                 )
             ''')
 
-    def register_user(self, username, hashed_password, salt):
+    def register_user(self, username, hashed_password, salt, secret):
         if self.user_exists(username):
             return False  # User already exists
         with sqlite3.connect(self.db_filename) as conn:
             conn.execute('''
-                INSERT INTO users (username, hashed_password, salt)
-                VALUES (?, ?, ?)
-            ''', (username, hashed_password, salt))
+                INSERT INTO users (username, hashed_password, salt, secret)
+                VALUES (?, ?, ?, ?)
+            ''', (username, hashed_password, salt, secret))
         return True
     
     def get_salt(self, username):
@@ -76,6 +86,16 @@ class UserManager:
             row = cursor.fetchone()
             stored_password, salt = row
             return hashed_password == stored_password
+        
+    def verify_otp(self, username, log_otp):
+        with sqlite3.connect(self.db_filename) as conn:
+            cursor = conn.execute('''
+                SELECT username, secret FROM users WHERE username = ?
+            ''', (username,))
+            row = cursor.fetchone()
+            _, stored_otp = row
+            totp = pyotp.TOTP(stored_otp)
+            return totp.verify(log_otp)
 
 def handle_client(client_socket, client_address, user_manager):
     log_connection(client_address)
@@ -92,8 +112,8 @@ def handle_client(client_socket, client_address, user_manager):
 
             # Handle registration and login messages
             if message.startswith("REGISTER:"):
-                _, reg_username, reg_hashed_password, reg_salt = message.split(":")
-                if user_manager.register_user(reg_username, reg_hashed_password, reg_salt):
+                _, reg_username, reg_hashed_password, reg_salt, reg_secret = message.split(":")
+                if user_manager.register_user(reg_username, reg_hashed_password, reg_salt, reg_secret):
                     client_socket.send("REGISTER_SUCCESS".encode('utf-8'))
                 else:
                     client_socket.send("REGISTER_FAILURE".encode('utf-8'))
@@ -107,17 +127,24 @@ def handle_client(client_socket, client_address, user_manager):
                     client_socket.send("LOGIN_USER_FAILURE".encode('utf-8'))
 
             elif message.startswith("LOGIN_PASS:"):
-                _, log_username, log_hashed_password = message.split(":")
-                if user_manager.authenticate_user(log_username, log_hashed_password):
+                _, log_username, log_hashed_password, log_otp = message.split(":")
+                if user_manager.authenticate_user(log_username, log_hashed_password) and user_manager.verify_otp(log_username, log_otp):
                     client_socket.send("LOGIN_PASS_SUCCESS".encode('utf-8'))
+                    username = log_username
+                    with open(log_login_file, 'a') as log_file:
+                        log_file.write(f'{datetime.datetime.now()} - {username} logged in from ({client_address[0]}:{client_address[1]})\n')
                 else:
                     client_socket.send("LOGIN_PASS_FAILURE".encode('utf-8'))
 
 
-            """elif message.startswith("NEW_USER:"):
+            elif message.startswith("NEW_USER:"):
                 _, message = message.split(':') 
                 response = f'{message} joined the chat'
+                username = message
+                with open(log_messages_file, 'a') as log_file:
+                    log_file.write(f'{datetime.datetime.now()} - {username} successfully joined the chat from ({client_address[0]}:{client_address[1]})\n')
                 with clients_lock:
+                    username_to_address[username] = client_address
                     for client in connected_clients:
                         client.send(response.encode('utf-8'))
 
@@ -127,7 +154,7 @@ def handle_client(client_socket, client_address, user_manager):
                 response = f'{message}'
                 with clients_lock:
                     for client in connected_clients:
-                        client.send(response.encode('utf-8'))"""
+                        client.send(response.encode('utf-8'))
 
     except ConnectionResetError:
         pass
@@ -135,10 +162,15 @@ def handle_client(client_socket, client_address, user_manager):
     finally:
         with clients_lock:
             connected_clients.remove(client_socket)
+            if username in username_to_address:
+                del username_to_address[username]
         client_socket.close()
-        if username:
-            log_disconnection(username, client_address)
-        print(f'Disconnected from {client_address[0]}:{client_address[1]}')
+        if username != None:
+            log_disconnection(client_address, username)
+            print(f'{datetime.datetime.now()} - Disconnection of {username} ({client_address[0]}:{client_address[1]})\n')
+        else:
+            log_disconnection(client_address)
+            print(f'Disconnected from {client_address[0]}:{client_address[1]}')
 
 def start_server(host='localhost', port=12345):
     user_manager = UserManager()
