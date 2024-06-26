@@ -33,6 +33,6 @@ class MessageTableManagement:
     def StoreMessage(self, source, destinataire, message):
         with sqlite3.connect(self.db_filename) as conn:
             conn.execute('''
-                INSERT INTO users (username, hashed_password, salt)
+                INSERT INTO messages (source, destinataire, message)
                 VALUES (?, ?, ?)
             ''', (source, destinataire , Chiffrement(message)))
