@@ -23,7 +23,7 @@ class MessageTableManagement:
     def CreateTableMessage(self):
         with sqlite3.connect(self.db_filename) as conn:
             conn.execute('''
-                CREATE TABLE IF NOT EXISTS messgaes (
+                CREATE TABLE IF NOT EXISTS messages (
                     source TEXT PRIMARY KEY,
                     destinataire TEXT PRIMARY KEY,
                     message TEXT NOT NULL,
