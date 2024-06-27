@@ -2,7 +2,7 @@ import socket
 import ssl
 
 #Définir le Socket
-host = "192.168.1.13"
+host = "192.168.0.14"
 port = 10500
 socket_obj = socket.socket(socket.AF_INET, socket. SOCK_STREAM)
 
@@ -22,9 +22,16 @@ server_ssl = context.wrap_socket(socket_obj, server_side=True)
 client, ip = server_ssl.accept ()
 print("L'ip", ip,"c'est connecté")
 
-#recevoir un message
-msg = client.recv(1024).decode()
-print("Client :",msg)
+while True:
+    try :
+        #recevoir un message
+        msg = client.recv(1024).decode()
+        print("Client :",msg)
+
+        #envoyer un message
+        client.send(input("->").encode())
+    except:
+        break
 
 client.close()
 server_ssl.close()
