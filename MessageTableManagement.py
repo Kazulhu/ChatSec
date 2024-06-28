@@ -23,7 +23,7 @@ class MessageTableManagement:
     def CreateTableMessage(self):
         with sqlite3.connect(self.db_filename) as conn:
             conn.execute('''
-                CREATE TABLE IF NOT EXISTS messgaes (
+                CREATE TABLE IF NOT EXISTS messages (
                     source TEXT PRIMARY KEY,
                     destinataire TEXT PRIMARY KEY,
                     message TEXT NOT NULL,
@@ -33,6 +33,17 @@ class MessageTableManagement:
     def StoreMessage(self, source, destinataire, message):
         with sqlite3.connect(self.db_filename) as conn:
             conn.execute('''
-                INSERT INTO users (username, hashed_password, salt)
+                INSERT INTO messages (source, destinataire, message)
                 VALUES (?, ?, ?)
             ''', (source, destinataire , Chiffrement(message)))
+
+    def GetMessageFromDatabase(self, SourceUsername, DestinataireUsername, DMmode):
+        with sqlite3.connect(self.db_filenale) as file:
+            if not DMmode:
+                file.execute('''
+                         SELECT * FROM messages WHERE source = ?
+                         ''', (SourceUsername))
+            else:
+                file.execute('''
+                         SELECT * FROM messages WHERE source = ? AND destinataire = ?
+                         ''', (SourceUsername, DestinataireUsername))
