@@ -99,3 +99,6 @@ kazulhu: Bonjour, ceci est un texte long pour v�rifier la taille de la fen�t
 2024-06-24 14:35:31.658235 - kazulhu successfully joined the chat from (127.0.0.1:24298)
 2024-06-24 17:07:30.728122 - kazulhu successfully joined the chat from (127.0.0.1:26103)
 2024-06-24 17:07:34.255940 - kazulhu: test
+2024-06-26 09:51:41.565352 - kazulhu successfully joined the chat from (127.0.0.1:51310)
+2024-06-26 09:51:48.465609 - kazulhu: test
+2024-06-26 09:51:51.131604 - kazulhu: ff
