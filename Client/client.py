@@ -13,7 +13,7 @@ from PyQt5.QtCore import pyqtSignal, Qt, QPoint, QByteArray # type: ignore
 from PyQt5.QtGui import QPixmap # type: ignore
 
 # Global variables
-SERVER_HOST = '127.0.0.1'
+SERVER_HOST = '192.168.1.175'
 SERVER_PORT = 12345
 
 # Function to hash passwords with Argon2, salt, and pepper
@@ -227,7 +227,7 @@ class RegisterWindow(QWidget):
         response = self.parent.client_ssl.recv(1024).decode('utf-8')
 
         if response == "REGISTER_SUCCESS":
-            QMessageBox.information(self, 'Success', 'Registration successful, you have 20 seconds to scan the qrcode:')
+            QMessageBox.information(self, 'Success', 'Registration successful, scan the qrcode:')
             self.input_password.clear()
             self.input_confirm_password.clear()
             self.input_username.clear()
