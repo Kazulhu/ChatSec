@@ -5,6 +5,7 @@ import sqlite3
 import pyotp
 import qrcode
 import secrets
+import ssl
 import pyargon2
 
 # Initialisation des logs
@@ -144,7 +145,6 @@ def handle_client(client_socket, client_address, user_manager):
                 with open(log_messages_file, 'a') as log_file:
                     log_file.write(f'{datetime.datetime.now()} - {username} successfully joined the chat from ({client_address[0]}:{client_address[1]})\n')
                 with clients_lock:
-                    username_to_address[username] = client_address
                     for client in connected_clients:
                         client.send(response.encode('utf-8'))
 
@@ -162,6 +162,9 @@ def handle_client(client_socket, client_address, user_manager):
     finally:
         with clients_lock:
             connected_clients.remove(client_socket)
+            if username != None:
+                for client in connected_clients:
+                    client.send(f'{username} left the chat.'.encode('utf-8'))
             if username in username_to_address:
                 del username_to_address[username]
         client_socket.close()
@@ -172,7 +175,7 @@ def handle_client(client_socket, client_address, user_manager):
             log_disconnection(client_address)
             print(f'Disconnected from {client_address[0]}:{client_address[1]}')
 
-def start_server(host='localhost', port=12345):
+def start_server(host='127.0.0.1', port=12345):
     user_manager = UserManager()
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -180,9 +183,14 @@ def start_server(host='localhost', port=12345):
     server_socket.bind((host, port))
     server_socket.listen(5)
 
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain("../CERT/cert-server.pem","../CERT/cert-key.pem")
+
+    server_ssl = context.wrap_socket(server_socket, server_side=True)
+
     print(f'Server listening on {host}:{port}')
     while True:
-        client_socket, client_address = server_socket.accept()
+        client_socket, client_address = server_ssl.accept()
         client_handler = threading.Thread(
             target=handle_client,
             args=(client_socket, client_address, user_manager)

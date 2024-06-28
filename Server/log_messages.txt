@@ -102,3 +102,23 @@ kazulhu: Bonjour, ceci est un texte long pour vï¿½rifier la taille de la fenï¿½t
 2024-06-26 09:51:41.565352 - kazulhu successfully joined the chat from (127.0.0.1:51310)
 2024-06-26 09:51:48.465609 - kazulhu: test
 2024-06-26 09:51:51.131604 - kazulhu: ff
+2024-06-26 10:24:45.010485 - kazulhu successfully joined the chat from (127.0.0.1:51602)
+2024-06-26 10:24:48.924662 - kazulhu: ttesteststse
+2024-06-26 10:24:53.262468 - kazulhu: hey
+2024-06-26 10:37:43.666914 - kazulhu successfully joined the chat from (127.0.0.1:51760)
+2024-06-26 10:39:09.488749 - kazulhu successfully joined the chat from (127.0.0.1:51774)
+2024-06-26 10:41:47.395434 - kazulhu successfully joined the chat from (127.0.0.1:51791)
+2024-06-26 10:41:49.468547 - kazulhu: test
+2024-06-26 10:41:51.453750 - kazulhu: oui
+2024-06-26 10:41:53.838463 - kazulhu: Salut
+2024-06-26 10:41:58.353596 - kazulhu: Tu vas vien
+2024-06-26 10:42:00.033112 - kazulhu: Oui 
+2024-06-26 10:42:03.652679 - kazulhu: Cela fonctionne
+2024-06-26 10:42:10.693546 - kazulhu: Cela fonctionne
+2024-06-26 10:42:26.621757 - kazulhu: je peux appuyer sur entré pour envoyer le message
+2024-06-26 10:42:38.301450 - kazulhu: mais il n'y a toujours pas de bouton de déconnexion
+2024-06-26 10:55:52.234439 - prout successfully joined the chat from (127.0.0.1:51872)
+2024-06-26 10:56:01.497645 - prout: Salut$
+2024-06-26 10:57:09.653119 - kazulhu successfully joined the chat from (127.0.0.1:51876)
+2024-06-26 10:57:19.849420 - kazulhu: alut
+2024-06-26 10:58:36.314361 - kazulhu: Salut comment tu vas ?

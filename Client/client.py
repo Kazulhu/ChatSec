@@ -2,17 +2,18 @@ import sys
 import socket
 import threading
 import secrets
-import pyargon2
-import pyotp
-import qrcode
+import pyargon2 # type: ignore
+import pyotp    # type: ignore
+import qrcode   # type: ignore
+import ssl
 from time import sleep
 from io import BytesIO
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QTextEdit, QListWidget, QMenu, QAction, QMessageBox, QStackedWidget
-from PyQt5.QtCore import pyqtSignal, Qt, QPoint, QByteArray
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QTextEdit, QListWidget, QMenu, QAction, QMessageBox, QStackedWidget    # type: ignore
+from PyQt5.QtCore import pyqtSignal, Qt, QPoint, QByteArray # type: ignore
+from PyQt5.QtGui import QPixmap # type: ignore
 
 # Global variables
-SERVER_HOST = 'localhost'
+SERVER_HOST = '127.0.0.1'
 SERVER_PORT = 12345
 
 # Function to hash passwords with Argon2, salt, and pepper
@@ -29,6 +30,13 @@ class ClientApp(QStackedWidget):
         super().__init__()
 
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        self.context.load_verify_locations("../CA/ca-cert.pem")
+
+        self.client_ssl = self.context.wrap_socket(self.client_socket, server_hostname=SERVER_HOST)
+        
+
         self.username = None
 
         self.login_window = LoginWindow(self)
@@ -41,7 +49,7 @@ class ClientApp(QStackedWidget):
         self.setWindowTitle('Secure Sphere')
         self.setGeometry(100, 100, 500, 400)
 
-        self.client_socket.connect((SERVER_HOST, SERVER_PORT))
+        self.client_ssl.connect((SERVER_HOST,SERVER_PORT))
 
     def switch_to_login(self):
         self.setCurrentIndex(0)
@@ -97,15 +105,15 @@ class LoginWindow(QWidget):
 
         hashed_password, salt = hash_password(password)
 
-        self.parent.client_socket.send(f"LOGIN_USER:{username}".encode('utf-8'))
-        response = self.parent.client_socket.recv(1024).decode('utf-8')
+        self.parent.client_ssl.send(f"LOGIN_USER:{username}".encode('utf-8'))
+        response = self.parent.client_ssl.recv(1024).decode('utf-8')
 
         if response.startswith("LOGIN_USER_SUCCESS"):
             _, log_salt = response.split(":")
             log_hashed_password, _ = hash_password(password, log_salt)
 
-            self.parent.client_socket.send(f"LOGIN_PASS:{username}:{log_hashed_password}:{otp}".encode('utf-8'))
-            response = self.parent.client_socket.recv(1024).decode('utf-8')
+            self.parent.client_ssl.send(f"LOGIN_PASS:{username}:{log_hashed_password}:{otp}".encode('utf-8'))
+            response = self.parent.client_ssl.recv(1024).decode('utf-8')
 
             if response == "LOGIN_PASS_SUCCESS":
                 QMessageBox.information(self, 'Success', "Login successful")
@@ -120,7 +128,7 @@ class LoginWindow(QWidget):
             QMessageBox.warning(self, 'Error', "Username doesn't exist.")
 
     def launch_chat(self, username):
-        chat_window = ChatWindow(username, self.parent.client_socket)
+        chat_window = ChatWindow(username, self.parent.client_ssl)
         self.parent.addWidget(chat_window)
         self.parent.setCurrentWidget(chat_window)
 
@@ -168,10 +176,15 @@ class RegisterWindow(QWidget):
         self.register_qr_label.hide()
 
         self.button_back = QPushButton('Back', self)
-        self.button_back.clicked.connect(self.parent.switch_to_login)
+        self.button_back.clicked.connect(self.go_back)
         self.layout.addWidget(self.button_back)
 
         self.setLayout(self.layout)
+
+    def go_back(self):
+        self.register_qr_label.hide()
+        self.parent.switch_to_login()
+
 
     def print_qr_code(self, username, secret):
 
@@ -210,8 +223,8 @@ class RegisterWindow(QWidget):
 
         self.print_qr_code(username, secret)
 
-        self.parent.client_socket.send(f"REGISTER:{username}:{hashed_password}:{salt}:{secret}".encode('utf-8'))
-        response = self.parent.client_socket.recv(1024).decode('utf-8')
+        self.parent.client_ssl.send(f"REGISTER:{username}:{hashed_password}:{salt}:{secret}".encode('utf-8'))
+        response = self.parent.client_ssl.recv(1024).decode('utf-8')
 
         if response == "REGISTER_SUCCESS":
             QMessageBox.information(self, 'Success', 'Registration successful, you have 20 seconds to scan the qrcode:')
@@ -221,16 +234,28 @@ class RegisterWindow(QWidget):
         else:
             QMessageBox.warning(self, 'Error', 'Username already exists')
 
+class EnterToSubmitTextEdit(QTextEdit):
+    # Define a new signal that will be emitted when the Enter key is pressed
+    enterPressed = pyqtSignal()
+
+    def keyPressEvent(self, event):
+        # If the Enter key is pressed, emit the enterPressed signal
+        if (event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter) and not event.modifiers() & Qt.ShiftModifier:
+            self.enterPressed.emit()
+        else:
+            # Otherwise, call the parent class's keyPressEvent method
+            super().keyPressEvent(event)
+
 # Chat window
 class ChatWindow(QWidget):
     message_received = pyqtSignal(str)
     users_list_updated = pyqtSignal(list)
 
-    def __init__(self, username, client_socket):
+    def __init__(self, username, client_ssl):
         super().__init__()
 
         self.username = username
-        self.client_socket = client_socket
+        self.client_ssl = client_ssl
         self.dm_windows = {}
 
         self.setWindowTitle(f'Chat - {self.username}')
@@ -250,7 +275,9 @@ class ChatWindow(QWidget):
 
         self.layout.addLayout(self.chat_layout)
 
-        self.message_input = QLineEdit(self)
+        #self.message_input = QLineEdit(self)
+        self.message_input = EnterToSubmitTextEdit()
+        self.message_input.enterPressed.connect(self.send_message)
         self.message_input.setPlaceholderText('Type your message here...')
         self.layout.addWidget(self.message_input)
 
@@ -266,19 +293,19 @@ class ChatWindow(QWidget):
 
         threading.Thread(target=self.receive_messages, daemon=True).start()
 
-        self.client_socket.send(f"NEW_USER:{self.username}".encode('utf-8'))
+        self.client_ssl.send(f"NEW_USER:{self.username}".encode('utf-8'))
 
     def send_message(self):
-        message = self.message_input.text()
+        message = self.message_input.toPlainText()
         if message:
             self.message_input.clear()
             message_with_username = f"{self.username}: {message}"
-            self.client_socket.send(message_with_username.encode('utf-8'))
+            self.client_ssl.send(message_with_username.encode('utf-8'))
 
     def receive_messages(self):
         while True:
             try:
-                message = self.client_socket.recv(1024).decode('utf-8')
+                message = self.client_ssl.recv(1024).decode('utf-8')
                 if message.startswith("USER_LIST:"):
                     users = message[len("USER_LIST:"):].split(',')
                     self.users_list_updated.emit(users)
@@ -323,7 +350,7 @@ class ChatWindow(QWidget):
 
     def open_dm(self, recipient, initial_message=None):
         if recipient not in self.dm_windows:
-            dm_window = DMWindow(self.username, recipient, self.client_socket)
+            dm_window = DMWindow(self.username, recipient, self.client_ssl)
             self.dm_windows[recipient] = dm_window
             dm_window.show()
             if initial_message:
@@ -333,12 +360,12 @@ class ChatWindow(QWidget):
 
 # Direct Message (DM) window
 class DMWindow(QWidget):
-    def __init__(self, sender, recipient, client_socket):
+    def __init__(self, sender, recipient, client_ssl):
         super().__init__()
 
         self.sender = sender
         self.recipient = recipient
-        self.client_socket = client_socket
+        self.client_ssl = client_ssl
 
         self.setWindowTitle(f'DM - {self.recipient}')
 
@@ -364,7 +391,7 @@ class DMWindow(QWidget):
         if message:
             self.message_input.clear()
             dm_message = f"DM:{self.sender}:{self.recipient}:{message}"
-            self.client_socket.send(dm_message.encode('utf-8'))
+            self.client_ssl.send(dm_message.encode('utf-8'))
 
     def display_message(self, message):
         self.dm_area.append(message)
