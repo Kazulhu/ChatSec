@@ -2,19 +2,25 @@ import sys
 import socket
 import threading
 import secrets
-import pyargon2 # type: ignore
-import pyotp    # type: ignore
-import qrcode   # type: ignore
+import pyargon2  # type: ignore
+import pyotp  # type: ignore
+import qrcode  # type: ignore
 import ssl
+import os
 from time import sleep
 from io import BytesIO
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QTextEdit, QListWidget, QMenu, QAction, QMessageBox, QStackedWidget    # type: ignore
-from PyQt5.QtCore import pyqtSignal, Qt, QPoint, QByteArray # type: ignore
-from PyQt5.QtGui import QPixmap # type: ignore
+from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout,
+                             QHBoxLayout, QTextEdit, QListWidget, QMenu, QAction, QMessageBox,
+                             QStackedWidget, QFileDialog, QTextBrowser, QTabWidget)  # type: ignore
+from PyQt5.QtCore import pyqtSignal, Qt, QPoint, QByteArray, QSize  # type: ignore
+from PyQt5.QtGui import QPixmap, QTextCursor, QIcon  # type: ignore
+import pyttsx3
+
+
 
 # Global variables
-SERVER_HOST = '192.168.1.175'
-SERVER_PORT = 12345
+SERVER_HOST = '127.0.0.1'
+SERVER_PORT = 443
 
 # Function to hash passwords with Argon2, salt, and pepper
 def hash_password(password, salt=None):
@@ -24,6 +30,23 @@ def hash_password(password, salt=None):
     hashed_password = pyargon2.hash(password + pepper, salt)
     return hashed_password, salt
 
+class TextToSpeech:
+    def __init__(self):
+        self.engine = pyttsx3.init()
+        self.engine.setProperty('voice', 'en')
+        self.voice_enabled = False
+
+    def speak(self, text):
+        if self.voice_enabled:
+            self.engine.say(text)
+            self.engine.runAndWait()
+
+    def set_voice_enabled(self, enabled):
+        self.voice_enabled = enabled
+
+    def is_enabled(self):
+        return self.voice_enabled
+
 # User interface for login and registration
 class ClientApp(QStackedWidget):
     def __init__(self):
@@ -32,10 +55,9 @@ class ClientApp(QStackedWidget):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        self.context.load_verify_locations("../CA/ca-cert.pem")
+        self.context.load_verify_locations("../CA_local/ca-cert.pem")
 
         self.client_ssl = self.context.wrap_socket(self.client_socket, server_hostname=SERVER_HOST)
-        
 
         self.username = None
 
@@ -49,7 +71,7 @@ class ClientApp(QStackedWidget):
         self.setWindowTitle('Secure Sphere')
         self.setGeometry(100, 100, 500, 400)
 
-        self.client_ssl.connect((SERVER_HOST,SERVER_PORT))
+        self.client_ssl.connect((SERVER_HOST, SERVER_PORT))
 
     def switch_to_login(self):
         self.setCurrentIndex(0)
@@ -103,7 +125,7 @@ class LoginWindow(QWidget):
         password = self.input_password.text()
         otp = self.input_otp.text()
 
-        hashed_password, salt = hash_password(password)
+        #hashed_password, salt = hash_password(password)
 
         self.parent.client_ssl.send(f"LOGIN_USER:{username}".encode('utf-8'))
         response = self.parent.client_ssl.recv(1024).decode('utf-8')
@@ -185,9 +207,7 @@ class RegisterWindow(QWidget):
         self.register_qr_label.hide()
         self.parent.switch_to_login()
 
-
     def print_qr_code(self, username, secret):
-
         # Create a TOTP object
         totp = pyotp.TOTP(secret)
 
@@ -215,7 +235,7 @@ class RegisterWindow(QWidget):
         if password != confirm_password:
             QMessageBox.warning(self, 'Error', 'Passwords do not match')
             return
-        
+
         hashed_password, salt = hash_password(password)
 
         # Generate a base32 secret for the OTP
@@ -256,34 +276,82 @@ class ChatWindow(QWidget):
 
         self.username = username
         self.client_ssl = client_ssl
-        self.dm_windows = {}
+        self.dm_tabs = {}
 
         self.setWindowTitle(f'Chat - {self.username}')
 
         self.layout = QVBoxLayout()
 
+        self.dm_tab_widget = QTabWidget()
+        self.layout.addWidget(self.dm_tab_widget)
+
+        self.global_chat_tab = QWidget()
+        self.global_layout = QVBoxLayout()
+        self.global_chat_tab.setLayout(self.global_layout)
+        self.dm_tab_widget.addTab(self.global_chat_tab, "Global Chat")
+
         self.chat_layout = QHBoxLayout()
 
-        self.chat_area = QTextEdit(self)
+        # Left side: chat area
+        self.chat_area = QTextBrowser(self)
         self.chat_area.setReadOnly(True)
+        self.chat_area.anchorClicked.connect(self.handle_link_click)
         self.chat_layout.addWidget(self.chat_area)
 
+        # Right side: users list
         self.users_list = QListWidget(self)
+        self.users_list.setMaximumWidth(150)
         self.users_list.setContextMenuPolicy(Qt.CustomContextMenu)
         self.users_list.customContextMenuRequested.connect(self.show_user_menu)
         self.chat_layout.addWidget(self.users_list)
 
-        self.layout.addLayout(self.chat_layout)
+        self.global_layout.addLayout(self.chat_layout)
 
-        #self.message_input = QLineEdit(self)
+        self.input_layout = QHBoxLayout()
+
         self.message_input = EnterToSubmitTextEdit()
         self.message_input.enterPressed.connect(self.send_message)
         self.message_input.setPlaceholderText('Type your message here...')
-        self.layout.addWidget(self.message_input)
+        self.input_layout.addWidget(self.message_input)
 
-        self.send_button = QPushButton('Send', self)
+        # Horizontal layout for buttons
+        self.buttons_layout = QHBoxLayout()
+
+        upload_icon = QIcon('../assets/joindre.png')
+        self.upload_button = QPushButton()
+        self.upload_button.setIcon(upload_icon)
+        self.upload_button.setIconSize(QSize(48, 48))
+        self.upload_button.setFixedSize(48, 48)
+        self.upload_button.clicked.connect(self.upload_file)
+        self.buttons_layout.addWidget(self.upload_button)
+
+        send_icon = QIcon('../assets/send.png')
+        self.send_button = QPushButton()
+        self.send_button.setIcon(send_icon)
+        self.send_button.setIconSize(QSize(48, 48))
+        self.send_button.setFixedSize(48, 48)
         self.send_button.clicked.connect(self.send_message)
-        self.layout.addWidget(self.send_button)
+        self.buttons_layout.addWidget(self.send_button)
+
+        self.buttons_layout.addStretch(25)
+
+        self.input_layout.addLayout(self.buttons_layout)
+
+        self.global_layout.addLayout(self.input_layout)
+
+        self.text_to_speech_button = QPushButton('Text to Speech', self)
+        self.text_to_speech_button.clicked.connect(self.toggle_text_to_speech)
+        self.global_layout.addWidget(self.text_to_speech_button, alignment=Qt.AlignBottom | Qt.AlignLeft)
+
+        self.logout_button = QPushButton('Logout', self)
+        self.logout_button.clicked.connect(self.logout)
+        self.global_layout.addWidget(self.logout_button, alignment=Qt.AlignBottom | Qt.AlignLeft)
+
+        # Initialize TextToSpeech engine
+        self.text_to_speech = TextToSpeech()
+
+        if not os.path.exists('download'):
+            os.makedirs('download')
 
         self.setLayout(self.layout)
         self.setGeometry(100, 100, 800, 600)
@@ -295,10 +363,39 @@ class ChatWindow(QWidget):
 
         self.client_ssl.send(f"NEW_USER:{self.username}".encode('utf-8'))
 
+    
+    def logout(self):
+        self.client_ssl.send(f"LOGOUT:{self.username}".encode('utf-8'))
+        self.client_ssl.close()
+        self.parent().setCurrentIndex(0)
+
+    # Send file
+    def upload_file(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Open file', '', 'All Files (*)')
+        if file_path:
+            filename = os.path.basename(file_path)
+            threading.Thread(target=self._upload_file_thread, args=(file_path, filename)).start()
+
+    def _upload_file_thread(self, file_path, filename):
+        self.client_ssl.send(f'UPLOAD_FILE:{filename}'.encode('utf-8'))
+        with open(file_path, 'rb') as f:
+            while True:
+                chunk = f.read(1024)
+                if not chunk:
+                    break
+                self.client_ssl.send(chunk)
+        self.client_ssl.send(b"END_OF_FILE")
+
     def send_message(self):
         message = self.message_input.toPlainText()
         if message:
             self.message_input.clear()
+        if self.users_list.currentItem():
+            recipient = self.users_list.currentItem().text()
+            if recipient:
+                dm_message = f"DM:{self.username}:{recipient}:{message}"
+                self.client_ssl.send(dm_message.encode('utf-8'))
+        else:
             message_with_username = f"{self.username}: {message}"
             self.client_ssl.send(message_with_username.encode('utf-8'))
 
@@ -311,21 +408,45 @@ class ChatWindow(QWidget):
                     self.users_list_updated.emit(users)
                 elif message.startswith("DM:"):
                     self.message_received.emit(message)
+                elif message.startswith("FILE_LINK:"):
+                    filename = message.split(":")[1]
+                    self.message_received.emit(f'<a href="download:{filename}">{filename}</a>')
                 else:
                     self.message_received.emit(message)
             except:
                 break
 
+    # Handle the link click
+    def handle_link_click(self, url):
+        if url.scheme() == "download":
+            filename = url.path()
+            self.client_ssl.send(f'ACCEPT_DOWNLOAD:{filename}'.encode('utf-8'))
+
     def display_message(self, message):
         if message.startswith("DM:"):
             _, sender, recipient, dm_message = message.split(":", 3)
             if recipient == self.username:
-                if sender in self.dm_windows:
-                    self.dm_windows[sender].display_message(f"{sender}: {dm_message}")
+                if sender in self.dm_tabs:
+                    self.dm_tabs[sender].display_message(f"{sender}: {dm_message}")
                 else:
                     self.open_dm(sender, initial_message=f"{sender}: {dm_message}")
         else:
             self.chat_area.append(message)
+            if self.text_to_speech.is_enabled():
+                self.text_to_speech.speak(message.replace(':','said, ',1))
+
+    def toggle_text_to_speech(self):
+        # Toggle text to speech
+        if self.text_to_speech.is_enabled():
+            self.text_to_speech.set_voice_enabled(False)
+            self.text_to_speech_button.setStyleSheet('color: black;')
+        else:
+            self.text_to_speech.set_voice_enabled(True)
+            self.text_to_speech_button.setStyleSheet('color: green;')
+            # Read the last message aloud if possible
+            last_message = self.chat_area.toPlainText().split('\n')[-1]  # Get the last message displayed
+            if last_message.strip():
+                self.text_to_speech.speak(last_message)
 
     def update_users_list(self, users):
         self.users_list.clear()
@@ -336,38 +457,38 @@ class ChatWindow(QWidget):
         if item is not None:
             menu = QMenu(self)
             report_action = QAction('Report', self)
-            dm_action = QAction('Send DM', self)
-
             report_action.triggered.connect(lambda: self.report_user(item.text()))
-            dm_action.triggered.connect(lambda: self.open_dm(item.text()))
-
-            menu.addAction(dm_action)
             menu.addAction(report_action)
+
+            dm_action = QAction('Send DM', self)
+            dm_action.triggered.connect(lambda: self.open_dm(item.text()))
+            menu.addAction(dm_action)
+
             menu.exec_(self.users_list.mapToGlobal(pos))
 
     def report_user(self, username):
         QMessageBox.information(self, 'Report', f'User {username} has been reported.')
+        report_message = f'REPORT:{self.username}:{username}'
+        self.client_ssl.send(report_message.encode('utf-8'))
 
     def open_dm(self, recipient, initial_message=None):
-        if recipient not in self.dm_windows:
-            dm_window = DMWindow(self.username, recipient, self.client_ssl)
-            self.dm_windows[recipient] = dm_window
-            dm_window.show()
-            if initial_message:
-                dm_window.display_message(initial_message)
+        if recipient in self.dm_tabs:
+            dm_widget = self.dm_tabs[recipient]
         else:
-            self.dm_windows[recipient].show()
+            dm_widget = DMTab(self.username, recipient, self.client_ssl)
+            self.dm_tabs[recipient] = dm_widget
+            self.dm_tab_widget.addTab(dm_widget, recipient)
+        if initial_message:
+            dm_widget.display_message(initial_message)
+        self.dm_tab_widget.setCurrentWidget(dm_widget)
 
-# Direct Message (DM) window
-class DMWindow(QWidget):
+class DMTab(QWidget):
     def __init__(self, sender, recipient, client_ssl):
         super().__init__()
 
         self.sender = sender
         self.recipient = recipient
         self.client_ssl = client_ssl
-
-        self.setWindowTitle(f'DM - {self.recipient}')
 
         self.layout = QVBoxLayout()
 
@@ -384,14 +505,16 @@ class DMWindow(QWidget):
         self.layout.addWidget(self.send_button)
 
         self.setLayout(self.layout)
-        self.setGeometry(100, 100, 400, 300)
 
     def send_dm(self):
         message = self.message_input.text()
         if message:
             self.message_input.clear()
             dm_message = f"DM:{self.sender}:{self.recipient}:{message}"
-            self.client_ssl.send(dm_message.encode('utf-8'))
+            try:
+                self.client_ssl.send(dm_message.encode('utf-8'))
+            except Exception as e:
+                print(f"Error sending message: {e}")
 
     def display_message(self, message):
         self.dm_area.append(message)

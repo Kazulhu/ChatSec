@@ -122,3 +122,13 @@ kazulhu: Bonjour, ceci est un texte long pour v�rifier la taille de la fen�t
 2024-06-26 10:57:09.653119 - kazulhu successfully joined the chat from (127.0.0.1:51876)
 2024-06-26 10:57:19.849420 - kazulhu: alut
 2024-06-26 10:58:36.314361 - kazulhu: Salut comment tu vas ?
+2024-07-02 11:57:24.810089 - toto successfully joined the chat from (127.0.0.1:63733)
+2024-07-02 11:58:39.374694 - toto: je taime
+2024-07-02 12:04:33.118517 - claudes successfully joined the chat from (127.0.0.1:63764)
+2024-07-02 12:04:57.721539 - claudes: bonjour claude
+2024-07-02 12:18:13.864318 - claudes: hello
+2024-07-02 13:54:41.365149 - claudes successfully joined the chat from (127.0.0.1:51924)
+2024-07-02 14:04:50.852088 - claudes successfully joined the chat from (127.0.0.1:51982)
+2024-07-02 14:09:14.052536 - toto successfully joined the chat from (127.0.0.1:52000)
+2024-07-02 14:24:19.714600 - toto successfully joined the chat from (127.0.0.1:52121)
+2024-07-02 14:49:47.657494 - toto successfully joined the chat from (127.0.0.1:52252)
