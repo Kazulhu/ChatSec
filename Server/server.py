@@ -7,6 +7,8 @@ import qrcode
 import secrets
 import ssl
 import pyargon2
+import os
+import shutil
 
 # Initialisation des logs
 log_connections_file = 'log_connections.txt'
@@ -29,9 +31,11 @@ def log_disconnection(client_address, username=None):
     if username!=None:
         with open(log_connections_file, 'a') as log_file:
             log_file.write(f'{datetime.datetime.now()} - Disconnection of {username} ({client_address[0]}:{client_address[1]})\n')
+            print(f'{datetime.datetime.now()} - Disconnection of {username} ({client_address[0]}:{client_address[1]})\n')
     else:
         with open(log_connections_file, 'a') as log_file:
             log_file.write(f'{datetime.datetime.now()} - Disconnected from ({client_address[0]}:{client_address[1]})\n')
+            print(f'{datetime.datetime.now()} - Disconnected from ({client_address[0]}:{client_address[1]})\n')
 
 # Function to log messages
 def log_message(message):
@@ -98,6 +102,16 @@ class UserManager:
             totp = pyotp.TOTP(stored_otp)
             return totp.verify(log_otp)
 
+def delete_files():
+    if os.path.exists(files_folder):
+        shutil.rmtree(files_folder)
+
+def update_user_list():
+    user_list = ','.join(username_to_address.keys())
+    with clients_lock:
+        for client in connected_clients:
+            client.send(f"USER_LIST:{user_list}".encode('utf-8'))
+
 def handle_client(client_socket, client_address, user_manager):
     log_connection(client_address)
     username = None
@@ -132,11 +146,23 @@ def handle_client(client_socket, client_address, user_manager):
                 if user_manager.authenticate_user(log_username, log_hashed_password) and user_manager.verify_otp(log_username, log_otp):
                     client_socket.send("LOGIN_PASS_SUCCESS".encode('utf-8'))
                     username = log_username
+                    username_to_address[username] = client_address
                     with open(log_login_file, 'a') as log_file:
                         log_file.write(f'{datetime.datetime.now()} - {username} logged in from ({client_address[0]}:{client_address[1]})\n')
+                    print(f'{datetime.datetime.now()} - {username} logged in from ({client_address[0]}:{client_address[1]})\n')
+                    update_user_list()
                 else:
                     client_socket.send("LOGIN_PASS_FAILURE".encode('utf-8'))
 
+            elif message.startswith("UPLOAD_FILE:"):
+                filename = message.split(":")[1]
+                threading.Thread(target=handle_file_download, args=(client_socket, filename)).start()
+                
+
+            elif message.startswith("DOWNLOAD_FILE:"):
+                filename = message.split(":")[1]
+                threading.Thread(target=handle_file_download, args=(client_socket, filename)).start()
+                
 
             elif message.startswith("NEW_USER:"):
                 _, message = message.split(':') 
@@ -160,13 +186,15 @@ def handle_client(client_socket, client_address, user_manager):
         pass
 
     finally:
+        delete_files()
         with clients_lock:
             connected_clients.remove(client_socket)
             if username != None:
                 for client in connected_clients:
                     client.send(f'{username} left the chat.'.encode('utf-8'))
-            if username in username_to_address:
-                del username_to_address[username]
+                if username in username_to_address:
+                    del username_to_address[username]
+                update_user_list()
         client_socket.close()
         if username != None:
             log_disconnection(client_address, username)
@@ -175,27 +203,63 @@ def handle_client(client_socket, client_address, user_manager):
             log_disconnection(client_address)
             print(f'Disconnected from {client_address[0]}:{client_address[1]}')
 
-def start_server(host='127.0.0.1', port=12345):
+def handle_file_upload(client_socket, filename):
+    filepath = os.path.join(files_folder, filename)
+    with open(filepath, 'wb') as f:
+        while True:
+            data = client_socket.recv(1024)
+            if data == b"END_OF_FILE":
+                break
+            f.write(data)
+
+    # Broadcast the download link to all clients
+    with clients_lock:
+        for client in connected_clients:
+            client.send(f"FILE_LINK:{filename}".encode('utf-8'))
+
+def handle_file_download(client_socket, filename):
+    filepath = os.path.join(files_folder, filename)
+    if os.path.exists(filepath):
+        with open(filepath, 'rb') as f:
+            while chunk := f.read(1024):
+                client_socket.send(chunk)
+        client_socket.send(b"END_OF_FILE")
+    else:
+        client_socket.send(b"ERROR: File not found")
+
+
+def start_server(host='0.0.0.0', port=12345):
     user_manager = UserManager()
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((host, port))
-    server_socket.listen(5)
+    server_socket.listen(10)
+
+    global files_folder
+    files_folder = 'files'
+    if not os.path.exists(files_folder):
+        os.makedirs(files_folder)
+
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_cert_chain("../CERT/cert-server.pem","../CERT/cert-key.pem")
+    context.load_cert_chain("../CERT_local/cert-server.pem","../CERT_local/cert-key.pem")
 
     server_ssl = context.wrap_socket(server_socket, server_side=True)
 
     print(f'Server listening on {host}:{port}')
-    while True:
-        client_socket, client_address = server_ssl.accept()
-        client_handler = threading.Thread(
-            target=handle_client,
-            args=(client_socket, client_address, user_manager)
-        )
-        client_handler.start()
+    try:
+        while True:
+            client_socket, client_address = server_ssl.accept()
+            client_handler = threading.Thread(
+                target=handle_client,
+                args=(client_socket, client_address, user_manager)
+            )
+            client_handler.start()
+
+    except KeyboardInterrupt:
+        print("\n[x] Server shutting down.")
+        server_socket.close()
 
 if __name__ == '__main__':
     start_server()
