@@ -6,25 +6,33 @@ import pyotp
 import qrcode
 import secrets
 import ssl
+import rsa as rs
 import pyargon2
-import rsa
 import os
 import shutil
-from MessageTableManagement import *
+from messageTableManagement import *
 
 # Initialisation des logs
 log_connections_file = 'log_connections.txt'
 log_messages_file = 'log_messages.txt'
 log_login_file = 'log_login.txt'
 
+#cypher the logs messages
+(PUBKEY, PRIVKEY) = rs.newkeys(512)
+
 # List to keep track of connected clients
 connected_clients = []
 username_to_socket = {}
 clients_lock = threading.Lock()
 
-#cypher the logs messages
-(PUBKEY, PRIVKEY) = rsa.newkeys(512)
-
+def save_private_key(private_key, filename='message_private_key.pem'):
+    index = 1
+    while os.path.exists(filename):
+        filename = f"{os.path.splitext(filename)[0]}_{index}.pem"
+        index += 1
+    
+    with open(filename, 'wb') as f:
+        f.write(private_key.save_pkcs1())
 
 # Function to log connections
 def log_connection(client_address):
@@ -46,7 +54,7 @@ def log_disconnection(client_address, username=None):
 # Function to log messages
 def log_message(message):
     with open(log_messages_file, 'a') as log_file:
-        log_file.write(f'{datetime.datetime.now()} - {rsa.encrypt(message,PUBKEY)}\n')
+        log_file.write(f'{datetime.datetime.now()} - {rs.encrypt(message.encode('utf8'),PUBKEY)}\n')
 
 # User management class
 class UserManager:
@@ -194,6 +202,7 @@ def handle_client(client_socket, client_address, user_manager):
                 recipient_socket = find_client_socket(recipient)
                 if recipient_socket:
                     recipient_socket.send(f"DM:{sender}:{recipient}:{dm_content}".encode('utf-8'))
+                
 
             elif message.startswith("LOGOUT:"):
                 _, username = message.split(":")
@@ -296,4 +305,5 @@ def start_server(host='0.0.0.0', port=443):
         client_handler.start()
 
 if __name__ == '__main__':
+    save_private_key(PRIVKEY)
     start_server()

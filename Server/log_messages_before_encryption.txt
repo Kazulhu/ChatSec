@@ -1,0 +1,385 @@
+2024-06-09 19:38:06.031484 - test: ouou
+2024-06-09 19:38:08.307239 - test: oiuuoiu
+2024-06-09 19:39:19.611270 - test: fezfzefze
+2024-06-09 19:39:20.654416 - test: fezfze
+2024-06-09 19:39:21.985976 - test: fezf
+2024-06-09 23:37:34.111862 - DM:test:test:test
+2024-06-09 23:37:56.498106 - guest: geg
+2024-06-10 17:06:53.642855 - test sent a file: log_messages.txt
+2024-06-10 18:00:03.890499 - test: testtes
+2024-06-10 18:00:08.396587 - test: tt
+2024-06-10 18:00:15.470271 - test: t
+2024-06-10 18:00:17.477832 - test: testsetst
+2024-06-10 18:00:24.177908 - test: fef
+2024-06-10 18:00:33.799999 - test: hello
+2024-06-10 18:01:33.603348 - test: test
+2024-06-10 18:01:40.208975 - test: t
+2024-06-10 18:03:08.061075 - test: test
+2024-06-10 18:03:47.262446 - test: hello
+2024-06-10 18:06:50.858500 - guest: fezfzefez
+2024-06-11 11:18:15.510648 - test: testst
+2024-06-11 11:18:22.791553 - FILE:test:Logo.jpg:285424
+2024-06-11 11:18:26.692818 - FILE:test:Logo.jpg:285424
+2024-06-11 11:18:29.514514 - test: gr
+2024-06-11 11:21:12.646866 - test: hello
+2024-06-11 11:57:02.478365 - test: testestestestestsetestsetestsetetestestest
+2024-06-11 12:05:20.568327 - REPORT:user:test
+2024-06-11 12:05:29.556470 - REPORT:user:admin
+2024-06-11 12:05:31.689549 - REPORT:user:user
+2024-06-11 12:05:47.880593 - DM:user:test:hi
+2024-06-11 12:06:11.422395 - DM:admin:admin:hi
+2024-06-11 12:06:44.709230 - DM:user:user:hi
+2024-06-11 12:06:49.768086 - DM:user:test:test
+2024-06-11 12:24:40.505007 - test: hello
+2024-06-11 12:25:06.257101 - DM:test:user:slt
+2024-06-12 10:11:30.809249 - admin: testse
+2024-06-12 10:11:32.770477 - admin: test
+2024-06-12 10:39:44.322965 - test: nonon
+2024-06-12 10:40:11.498988 - admin: yes
+2024-06-12 10:40:44.103760 - DM:admin:test:salut mec
+2024-06-12 10:40:47.471312 - DM:admin:test:y'
+2024-06-15 18:29:14.978731 - NEW_USER:kazulhu
+2024-06-15 18:29:21.683551 - kazulhu: hello
+2024-06-15 18:29:27.432942 - kazulhu: yes
+2024-06-15 18:32:46.765935 - kazulhu: test
+2024-06-15 18:34:28.285810 - NEW_USER:kazulhu
+2024-06-15 18:34:34.287560 - kazulhu: test
+2024-06-15 18:41:34.790406 - guillaume: test
+2024-06-15 18:41:36.246305 - kazulhu: test
+2024-06-15 18:44:02.236421 - NEW_USER:guillaume
+2024-06-15 18:44:22.760896 - NEW_USER:kazulhu
+2024-06-15 18:44:32.291937 - kazulhu: test
+2024-06-15 18:44:35.090756 - guillaume: yes
+2024-06-15 18:47:42.879786 - kazulhu: test
+2024-06-15 18:47:46.708223 - guillaume: oui?
+2024-06-15 21:05:18.338010 - kazulhu: test
+2024-06-15 21:05:53.020768 - admin: salut
+2024-06-15 21:05:55.103218 - kazulhu: yes
+2024-06-15 21:06:39.941016 - kazulhu: Bonjour, ceci est un texte long pour vï¿½rifier la taille de la fenï¿½tre de l'application pour ensuite pouvoir la redimensionner selon les besoins.
+2024-06-15 21:06:46.923044 - admin: admin: salut
+kazulhu: yes
+kazulhu: Bonjour, ceci est un texte long pour vï¿½rifier la taille de la fenï¿½tre de l'application pour ensuite pouvoir la redimensionner selon les besoins.admin: salut
+kazulhu: yes
+kazulhu: Bonjour, ceci est un texte long pour vï¿½rifier la taille de la fenï¿½tre de l'application pour ensuite pouvoir la redimensionner selon les besoins.admin: salut
+kazulhu: yes
+kazulhu: Bonjour, ceci est un texte long pour vï¿½rifier la taille de la fenï¿½tre de l'application pour ensuite pouvoir la redimensionner selon les besoins.admin: salut
+kazulhu: yes
+kazulhu: Bonjour, ceci est un texte long pour vï¿½rifier la taille de la fenï¿½tre de l'application pour ensuite pouvoir la redimensionner selon les besoins.admin: salut
+kazulhu: yes
+kazulhu: Bonjour, ceci est un texte long pour vï¿½rifier la taille de la fenï¿½tre de l'application pour ensuite pouvoir la redimensionner selon les besoins.admin: salut
+kazulhu: yes
+kazulhu: Bonjour, ceci est un texte long pour vï¿½rifier la taille de la fenï¿½tre de l'
+2024-06-15 21:06:46.954429 - application pour ensuite pouvoir la redimensionner selon les besoins.admin: salut
+kazulhu: yes
+kazulhu: Bonjour, ceci est un texte long pour vï¿½rifier la taille de la fenï¿½tre de l'application pour ensuite pouvoir la redimensionner selon les besoins.
+2024-06-15 21:06:54.520856 - kazulhu: woa
+2024-06-16 10:49:23.692478 - guillaume: salut
+2024-06-16 10:49:26.067599 - kazulhu: yes
+2024-06-16 10:50:23.273894 - kazulhu: salut
+2024-06-16 10:50:26.211595 - guillaume: yes
+2024-06-16 10:58:34.697166 - guillaume: test
+2024-06-16 10:58:37.264032 - guillaume: testestt
+2024-06-16 14:10:47.355622 - audrey: Salut
+2024-06-16 14:10:52.803923 - guillaume: Bonjour ï¿½ toi
+2024-06-18 08:30:08.994244 - kazulhu: hello
+2024-06-18 08:32:27.188895 - antoine: salut
+2024-06-18 08:35:50.137910 - emy: test
+2024-06-18 08:36:04.803897 - emy: salut
+2024-06-18 10:01:56.884187 - guillaume: Salut antoine
+2024-06-18 10:03:16.049961 - antoine: salut
+2024-06-20 20:49:39.981940 - kazulhu: test
+2024-06-20 21:41:32.332945 - gui: test
+2024-06-21 00:26:03.067945 - kazulhu successfully joined the chat from (127.0.0.1:60649)
+2024-06-21 00:26:11.088236 - kazulhu: gg
+2024-06-21 00:26:13.500853 - kazulhu: gg
+2024-06-21 00:28:08.479066 - kazulhu successfully joined the chat from (127.0.0.1:60664)
+2024-06-21 00:28:12.121307 - kazulhu: ok
+2024-06-24 14:21:07.604059 - kazulhu successfully joined the chat from (127.0.0.1:62026)
+2024-06-24 14:21:09.972859 - kazulhu: test
+2024-06-24 14:35:31.658235 - kazulhu successfully joined the chat from (127.0.0.1:24298)
+2024-06-24 17:07:30.728122 - kazulhu successfully joined the chat from (127.0.0.1:26103)
+2024-06-24 17:07:34.255940 - kazulhu: test
+2024-06-26 09:51:41.565352 - kazulhu successfully joined the chat from (127.0.0.1:51310)
+2024-06-26 09:51:48.465609 - kazulhu: test
+2024-06-26 09:51:51.131604 - kazulhu: ff
+2024-06-26 10:24:45.010485 - kazulhu successfully joined the chat from (127.0.0.1:51602)
+2024-06-26 10:24:48.924662 - kazulhu: ttesteststse
+2024-06-26 10:24:53.262468 - kazulhu: hey
+2024-06-26 10:37:43.666914 - kazulhu successfully joined the chat from (127.0.0.1:51760)
+2024-06-26 10:39:09.488749 - kazulhu successfully joined the chat from (127.0.0.1:51774)
+2024-06-26 10:41:47.395434 - kazulhu successfully joined the chat from (127.0.0.1:51791)
+2024-06-26 10:41:49.468547 - kazulhu: test
+2024-06-26 10:41:51.453750 - kazulhu: oui
+2024-06-26 10:41:53.838463 - kazulhu: Salut
+2024-06-26 10:41:58.353596 - kazulhu: Tu vas vien
+2024-06-26 10:42:00.033112 - kazulhu: Oui 
+2024-06-26 10:42:03.652679 - kazulhu: Cela fonctionne
+2024-06-26 10:42:10.693546 - kazulhu: Cela fonctionne
+2024-06-26 10:42:26.621757 - kazulhu: je peux appuyer sur entré pour envoyer le message
+2024-06-26 10:42:38.301450 - kazulhu: mais il n'y a toujours pas de bouton de déconnexion
+2024-06-26 10:55:52.234439 - prout successfully joined the chat from (127.0.0.1:51872)
+2024-06-26 10:56:01.497645 - prout: Salut$
+2024-06-26 10:57:09.653119 - kazulhu successfully joined the chat from (127.0.0.1:51876)
+2024-06-26 10:57:19.849420 - kazulhu: alut
+2024-06-26 10:58:36.314361 - kazulhu: Salut comment tu vas ?
+2024-06-29 21:03:39.132414 - kazulhu successfully joined the chat from (127.0.0.1:36394)
+2024-06-29 21:03:42.902496 - kazulhu: hello
+2024-06-29 21:04:38.855691 - guillaume successfully joined the chat from (127.0.0.1:36395)
+2024-06-29 21:04:42.059201 - guillaume: test
+2024-06-29 21:08:09.519154 - kazulhu successfully joined the chat from (127.0.0.1:36427)
+2024-06-29 21:11:08.197430 - guillaume successfully joined the chat from (127.0.0.1:36444)
+2024-06-29 21:11:12.237686 - kazulhu: ouf
+2024-06-29 21:19:10.440894 - kazulhu successfully joined the chat from (127.0.0.1:36501)
+2024-06-29 21:19:13.207529 - kazulhu: tesgv
+2024-07-02 10:24:10.897521 - kazulhu successfully joined the chat from (127.0.0.1:64272)
+2024-07-02 10:24:13.257030 - kazulhu: test
+2024-07-02 10:24:50.227990 - guillaume successfully joined the chat from (127.0.0.1:64329)
+2024-07-02 10:24:52.481202 - guillaume: test
+2024-07-02 10:25:25.335445 - guillaume: test
+2024-07-02 10:26:12.180075 - kazulhu successfully joined the chat from (127.0.0.1:64361)
+2024-07-02 10:26:19.426744 - SA256 -> bcrypt -> argon2
+SHA256 less secure than bcrypt
+bcrypt is really computationally expensive
+argon2 won the password hashing competition in 2015
+2024-07-02 10:26:19.465743 - END_OF_FILE
+2024-07-02 10:27:02.876539 - guillaume: tes
+2024-07-02 10:27:04.090203 - guillaume: tes
+2024-07-02 10:27:05.692041 - guillaume: tegeq
+2024-07-02 10:27:08.241205 - guillaume: f
+2024-07-02 10:46:48.499036 - kazulhu successfully joined the chat from (127.0.0.1:64586)
+2024-07-02 10:47:08.249720 - DM:kazulhu:kazulhu:salut
+2024-07-02 11:09:46.522545 - kazulhu successfully joined the chat from (127.0.0.1:64815)
+2024-07-02 11:10:10.226526 - guillaume successfully joined the chat from (127.0.0.1:64816)
+2024-07-02 11:10:13.031423 - guillaume: test
+2024-07-02 11:10:16.967600 - User 'kazulhu' reported user 'guillaume'.
+2024-07-02 11:10:24.441076 - As an projet manager, I want to be able to create groups so that the members of a team can talk in this group.
+As a user, I want to be able to send messages and documents whithout the fear of it being stolen.
+As a user I want to be able to send DM to specific people.
+As a user, I want to be able to see the logged in people.
+As a DSI, I want all the data and logs to be secured and encrypted so the security is kept.
+As a user, I want to be able to Register an account and login into the chat using multi-factors authentication
+2024-07-02 11:16:39.965940 - kazulhu successfully joined the chat from (127.0.0.1:64836)
+2024-07-02 11:17:10.316714 - guillaume successfully joined the chat from (127.0.0.1:64838)
+2024-07-02 11:17:13.430241 - kazulhu: tzse
+2024-07-02 11:17:29.083015 - ut_otp.clear()
+
+        self.button_login = QPushButton('Login', self)
+        self.button_login.clicked.connect(self.login)
+        self.layout.addWidget(self.button_login)
+
+        self.button_register = QPushButton('Register', self)
+        self.button_register.clicked.connect(self.parent.switch_to_register)
+        self.layout.addWidget(self.button_register)
+
+        self.setLayout(self.layout)
+
+    def login(self):
+        username = self.input_username.text()
+        password = self.input_password.text()
+        otp = self.input_otp.text()
+
+        hashed_password, salt = hash_password(password)
+
+        self.parent.client_ssl.send(f"LOGIN_USER:{username}".encode('utf-8'))
+        response = self.parent.client_ssl.recv(1024).decode('utf-8')
+
+        if response.startswith("LOGIN_USER_SUCCESS"):
+            _, log_salt = response.split(":")
+            log_hashed_password, _ = hash_password(password, log_salt)
+
+            self.parent.client_ssl.send(f"LOGIN_PASS:{username}:{log
+2024-07-02 11:18:09.240704 - guillaume: test
+2024-07-02 12:41:56.502680 - kazulhu successfully joined the chat from (127.0.0.1:65104)
+2024-07-02 12:42:17.980861 - guillaume successfully joined the chat from (127.0.0.1:65105)
+2024-07-02 12:42:40.998578 - kazulhu: test
+2024-07-02 12:42:44.169834 - guillaume: test
+2024-07-02 13:30:12.760361 - kazulhu successfully joined the chat from (127.0.0.1:65223)
+2024-07-02 13:30:14.367554 - kazulhu: test
+2024-07-02 13:30:39.892211 - guillaume successfully joined the chat from (127.0.0.1:65224)
+2024-07-02 13:35:13.425133 - kazulhu successfully joined the chat from (127.0.0.1:65255)
+2024-07-02 13:35:40.421623 - guillaume successfully joined the chat from (127.0.0.1:65256)
+2024-07-02 13:37:49.936358 - kazulhu successfully joined the chat from (127.0.0.1:65266)
+2024-07-02 13:38:10.387172 - guillaume successfully joined the chat from (127.0.0.1:65268)
+2024-07-02 13:38:40.202642 - antoine successfully joined the chat from (127.0.0.1:65269)
+2024-07-02 13:38:47.492734 - DM:kazulhu:guillaume:salut
+2024-07-02 13:49:40.740976 - kazulhu successfully joined the chat from (127.0.0.1:65316)
+2024-07-02 13:50:09.156204 - guillaume successfully joined the chat from (127.0.0.1:65326)
+2024-07-02 13:50:38.677464 - antoine successfully joined the chat from (127.0.0.1:65327)
+2024-07-02 13:56:24.851240 - kazulhu successfully joined the chat from (127.0.0.1:65427)
+2024-07-02 13:56:49.919609 - guillaume successfully joined the chat from (127.0.0.1:65428)
+2024-07-02 13:57:08.853687 - antoine successfully joined the chat from (127.0.0.1:65433)
+2024-07-02 13:59:16.253602 - kazulhu successfully joined the chat from (127.0.0.1:65447)
+2024-07-02 13:59:40.681133 - guillaume successfully joined the chat from (127.0.0.1:65449)
+2024-07-02 13:59:57.031939 - antoine successfully joined the chat from (127.0.0.1:65450)
+2024-07-02 14:00:33.808927 - User 'antoine' reported user 'kazulhu'.
+2024-07-02 14:21:40.299634 - kazulhu successfully joined the chat from (127.0.0.1:1031)
+2024-07-02 14:21:59.010863 - guillaume successfully joined the chat from (127.0.0.1:1032)
+2024-07-02 14:29:19.900212 - kazulhu successfully joined the chat from (127.0.0.1:1062)
+2024-07-02 14:29:39.622400 - guillaume successfully joined the chat from (127.0.0.1:1063)
+2024-07-02 14:29:42.613089 - kazulhu: tes
+2024-07-02 14:29:43.684056 - kazulhu: test
+2024-07-02 14:29:46.080216 - User 'kazulhu' reported user 'guillaume'.
+2024-07-02 14:30:14.068009 - guillaume: test
+2024-07-02 14:31:11.316651 - kazulhu successfully joined the chat from (127.0.0.1:1071)
+2024-07-02 14:31:28.593968 - guillaume successfully joined the chat from (127.0.0.1:1072)
+2024-07-02 14:31:30.541514 - kazulhu: test
+2024-07-02 14:32:22.734992 - kazulhu successfully joined the chat from (127.0.0.1:1076)
+2024-07-02 14:33:10.156118 - guillaume successfully joined the chat from (127.0.0.1:1135)
+2024-07-02 14:33:15.435358 - kazulhu: Hello World
+2024-07-02 14:33:27.013682 - guillaume: ok
+2024-07-02 14:37:23.535018 - kazulhu successfully joined the chat from (127.0.0.1:1170)
+2024-07-02 14:37:40.445561 - guillaume successfully joined the chat from (127.0.0.1:1171)
+2024-07-02 14:37:59.671640 - guillaume: testset
+2024-07-02 14:38:00.409220 - guillaume: tse
+2024-07-02 14:39:40.137451 - kazulhu successfully joined the chat from (127.0.0.1:1178)
+2024-07-02 14:39:57.392522 - guillaume successfully joined the chat from (127.0.0.1:1180)
+2024-07-02 14:40:00.801390 - kazulhu: ok
+2024-07-02 14:40:14.684185 - guillaume: test
+2024-07-02 14:44:38.923981 - kazulhu successfully joined the chat from (127.0.0.1:1197)
+2024-07-02 14:44:55.696846 - guillaume successfully joined the chat from (127.0.0.1:1198)
+2024-07-02 14:44:58.918541 - kazulhu: Hello
+2024-07-02 14:45:01.687314 - guillaume: ça va?
+2024-07-02 15:27:05.930990 - test
+2024-07-02 15:27:07.351922 - tes
+2024-07-02 15:27:11.395577 - ok
+2024-07-02 17:06:41.101655 - kazulhu successfully joined the chat from (127.0.0.1:1889)
+2024-07-02 17:06:43.404379 - kazulhu: test
+2024-07-02 17:06:44.767243 - kazulhu: 
+2024-07-02 17:06:46.429340 - kazulhu: test
+2024-07-02 17:06:47.285633 - kazulhu: tes
+2024-07-02 17:06:48.649203 - kazulhu: tes
+2024-07-02 17:08:40.205466 - kazulhu successfully joined the chat from (127.0.0.1:1896)
+2024-07-02 17:08:41.381771 - kazulhu: test
+2024-07-02 17:08:44.411462 - kazulhu: ttttt
+2024-07-02 17:20:46.526400 - kazulhu successfully joined the chat from (127.0.0.1:2093)
+2024-07-02 17:20:48.966238 - kazulhu: test
+2024-07-02 17:21:12.061848 - guillaume successfully joined the chat from (127.0.0.1:2095)
+2024-07-02 17:39:40.478740 - kazulhu successfully joined the chat from (127.0.0.1:2143)
+2024-07-02 17:57:46.353730 - kazulhu successfully joined the chat from (127.0.0.1:2269)
+2024-07-02 17:57:49.742096 - kazulhu: test
+2024-07-02 17:57:53.761673 - kazulhu: hello
+2024-07-02 18:07:42.313008 - kazulhu successfully joined the chat from (127.0.0.1:2629)
+2024-07-02 18:07:47.141666 - MESSAGE:kazulhu:test
+2024-07-02 18:08:10.850970 - guillaume successfully joined the chat from (127.0.0.1:2638)
+2024-07-02 18:08:13.609509 - MESSAGE:guillaume:test
+2024-07-02 18:08:19.812642 - LOGOUT:kazulhu
+2024-07-02 18:12:38.963101 - kazulhu successfully joined the chat from (127.0.0.1:2705)
+2024-07-02 18:12:42.741326 - kazulhu: test
+2024-07-02 18:13:19.725492 - kazulhu successfully joined the chat from (127.0.0.1:2719)
+2024-07-02 18:13:22.202292 - kazulhu: test
+2024-07-02 18:13:23.684040 - kazulhu: test
+2024-07-02 18:13:29.261620 - User 'kazulhu' reported user 'kazulhu'.
+2024-07-02 18:13:31.500087 - LOGOUT:kazulhu
+2024-07-02 18:28:12.986198 - kazulhu successfully joined the chat from (127.0.0.1:2983)
+2024-07-02 18:28:18.308994 - kazulhu: test
+2024-07-02 18:28:20.205488 - kazulhu: ok
+2024-07-02 18:35:12.358071 - kazulhu successfully joined the chat from (127.0.0.1:3100)
+2024-07-02 18:37:10.820256 - kazulhu successfully joined the chat from (127.0.0.1:3121)
+2024-07-02 18:37:18.919593 - kazulhu: test
+2024-07-02 18:37:53.440217 - kazulhu successfully joined the chat from (127.0.0.1:3128)
+2024-07-02 18:48:38.489568 - kazulhu successfully joined the chat from (127.0.0.1:3995)
+2024-07-02 18:50:18.277474 - kazulhu successfully joined the chat from (127.0.0.1:4025)
+2024-07-02 18:50:24.225183 - kazulhu: hello
+2024-07-02 18:50:26.736181 - kazulhu: ca va?
+2024-07-02 18:52:13.587408 - kazulhu successfully joined the chat from (127.0.0.1:4048)
+2024-07-02 18:52:16.517879 - kazulhu: test
+2024-07-02 18:53:43.244699 - kazulhu successfully joined the chat from (127.0.0.1:4063)
+2024-07-02 19:13:47.712103 - kazulhu successfully joined the chat from (127.0.0.1:4550)
+2024-07-02 19:13:57.984653 - kazulhu: test
+2024-07-02 19:14:03.508548 - kazulhu: test
+2024-07-02 19:14:09.093509 - kazulhu: hello
+2024-07-02 19:18:27.401813 - kazulhu successfully joined the chat from (127.0.0.1:4593)
+2024-07-02 19:18:31.115866 - kazulhu: Bonjour
+2024-07-02 19:18:40.239515 - kazulhu: Comment tu vas?
+2024-07-02 19:20:09.692540 - kazulhu successfully joined the chat from (127.0.0.1:4621)
+2024-07-02 19:20:41.600689 - kazulhu successfully joined the chat from (127.0.0.1:4623)
+2024-07-02 19:21:14.779719 - kazulhu successfully joined the chat from (127.0.0.1:4627)
+2024-07-02 19:22:08.916703 - kazulhu successfully joined the chat from (127.0.0.1:4638)
+2024-07-02 19:23:11.704140 - kazulhu successfully joined the chat from (127.0.0.1:4646)
+2024-07-02 19:23:20.207194 - kazulhu: Hello
+2024-07-02 19:23:26.605628 - kazulhu: How are you doing today?
+2024-07-02 19:24:39.936608 - kazulhu successfully joined the chat from (127.0.0.1:4668)
+2024-07-02 19:24:46.585134 - kazulhu: hi
+2024-07-02 19:26:41.028424 - kazulhu successfully joined the chat from (127.0.0.1:4689)
+2024-07-02 19:27:41.401312 - kazulhu successfully joined the chat from (127.0.0.1:4697)
+2024-07-02 19:29:09.970943 - kazulhu successfully joined the chat from (127.0.0.1:4849)
+2024-07-02 21:44:39.704624 - guillaume successfully joined the chat from (127.0.0.1:6712)
+2024-07-02 21:44:53.708898 - guillaume: hell
+2024-07-02 21:45:20.233126 - kazulhu successfully joined the chat from (127.0.0.1:6714)
+2024-07-02 21:45:31.913631 - kazulhu: yesyesyes
+2024-07-02 21:46:16.065816 - guillaume: testestest
+2024-07-02 21:46:19.669447 - guillaume: ok
+2024-07-02 21:46:46.799483 - guillaume: Yes
+2024-07-02 21:47:49.366590 - kazulhu successfully joined the chat from (127.0.0.1:6729)
+2024-07-02 21:48:25.421297 - kazulhu successfully joined the chat from (127.0.0.1:6740)
+2024-07-02 21:48:28.694223 - kazulhu: Test
+2024-07-02 22:03:28.074331 - kazulhu successfully joined the chat from (127.0.0.1:6796)
+2024-07-02 22:03:55.422402 - guillaume successfully joined the chat from (127.0.0.1:6798)
+2024-07-02 22:03:56.957461 - kazulhu: test
+2024-07-02 22:14:09.437873 - kazulhu successfully joined the chat from (127.0.0.1:6826)
+2024-07-02 22:14:23.633145 - guillaume successfully joined the chat from (127.0.0.1:6827)
+2024-07-02 22:14:51.326772 - kazulhu successfully joined the chat from (127.0.0.1:6828)
+2024-07-02 22:14:53.285836 - kazulhu: test
+2024-07-02 22:16:48.879397 - kazulhu successfully joined the chat from (127.0.0.1:6832)
+2024-07-02 22:17:10.096632 - guillaume successfully joined the chat from (127.0.0.1:6833)
+2024-07-02 22:18:09.932108 - guillaume successfully joined the chat from (127.0.0.1:6845)
+2024-07-02 22:18:24.073046 - kazulhu successfully joined the chat from (127.0.0.1:6846)
+2024-07-02 22:18:40.884821 - kazulhu: ggg
+2024-07-02 22:18:41.723199 - kazulhu: g
+2024-07-02 22:18:48.216342 - kazulhu: ggg
+2024-07-02 22:18:50.993592 - kazulhu: gg
+2024-07-02 22:20:28.734107 - kazulhu successfully joined the chat from (127.0.0.1:6848)
+2024-07-02 22:20:47.835798 - guillaume successfully joined the chat from (127.0.0.1:6849)
+2024-07-02 22:21:14.245670 - guillaume: ok
+2024-07-02 22:29:19.150851 - kazulhu successfully joined the chat from (127.0.0.1:6859)
+2024-07-02 22:29:51.534424 - guillaume successfully joined the chat from (127.0.0.1:6860)
+2024-07-02 22:31:19.556090 - kazulhu successfully joined the chat from (127.0.0.1:6869)
+2024-07-02 22:31:38.626936 - kazulhu: tes
+2024-07-02 22:31:39.882065 - kazulhu: ttt
+2024-07-02 22:31:41.394072 - kazulhu: test
+2024-07-02 22:32:09.474895 - guillaume successfully joined the chat from (127.0.0.1:6871)
+2024-07-02 22:32:10.761732 - kazulhu: test
+2024-07-02 22:32:11.792907 - guillaume: test
+2024-07-02 22:32:16.361664 - kazulhu: ok
+2024-07-02 22:32:23.725575 - kazulhu: Ee
+2024-07-02 22:32:27.645277 - kazulhu: rerer
+2024-07-02 22:32:33.744663 - guillaume: erer
+2024-07-02 22:32:35.900619 - guillaume: 
+2024-07-02 22:32:37.848739 - guillaume: 
+2024-07-02 22:32:38.205521 - guillaume: 
+2024-07-02 22:32:38.382510 - guillaume: 
+2024-07-02 22:32:38.563642 - guillaume: 
+2024-07-02 22:32:38.752446 - guillaume: 
+2024-07-02 22:32:38.944065 - guillaume: 
+2024-07-02 22:32:39.119865 - guillaume: 
+2024-07-02 22:43:14.073014 - guillaume successfully joined the chat from (127.0.0.1:6897)
+2024-07-02 22:43:28.498986 - kazulhu successfully joined the chat from (127.0.0.1:6906)
+2024-07-02 22:43:47.492554 - kazulhu: test
+2024-07-02 22:46:11.180168 - kazulhu successfully joined the chat from (127.0.0.1:6909)
+2024-07-02 22:46:25.528927 - guillaume successfully joined the chat from (127.0.0.1:6914)
+2024-07-02 22:46:27.681985 - kazulhu: test
+2024-07-02 22:46:53.331670 - guillaume: ok
+2024-07-02 22:52:19.550554 - guillaume successfully joined the chat from (127.0.0.1:6931)
+2024-07-02 22:52:42.816921 - kazulhu successfully joined the chat from (127.0.0.1:6934)
+2024-07-02 22:52:44.874986 - guillaume: test
+2024-07-02 22:54:08.755248 - kazulhu successfully joined the chat from (127.0.0.1:6937)
+2024-07-02 22:54:23.084113 - guillaume successfully joined the chat from (127.0.0.1:6938)
+2024-07-02 22:58:16.866102 - kazulhu successfully joined the chat from (127.0.0.1:6942)
+2024-07-02 22:58:53.192991 - kazulhu successfully joined the chat from (127.0.0.1:6944)
+2024-07-02 22:59:22.636509 - kazulhu successfully joined the chat from (127.0.0.1:6946)
+2024-07-02 23:00:21.479073 - kazulhu successfully joined the chat from (127.0.0.1:6948)
+2024-07-02 23:00:25.379892 - kazulhu: test
+2024-07-02 23:00:54.050860 - kazulhu successfully joined the chat from (127.0.0.1:6950)
+2024-07-02 23:04:57.243767 - kazulhu successfully joined the chat from (127.0.0.1:6956)
+2024-07-02 23:05:11.276783 - guillaume successfully joined the chat from (127.0.0.1:6957)
+2024-07-02 23:05:19.180955 - kazulhu: test
+2024-07-02 23:05:43.214892 - kazulhu: yes
+2024-07-02 23:12:12.763797 - kazulhu successfully joined the chat from (127.0.0.1:6986)
+2024-07-02 23:12:14.660386 - kazulhu: test
+2024-07-02 23:12:17.775518 - kazulhu: ahahahahah
+2024-07-02 23:19:58.906092 - kazulhu successfully joined the chat from (127.0.0.1:7069)
+2024-07-02 23:20:56.726304 - kazulhu successfully joined the chat from (127.0.0.1:7074)
+2024-07-02 23:25:10.910647 - kazulhu successfully joined the chat from (127.0.0.1:7084)
+2024-07-02 23:25:12.500070 - b'\x9647\xfc\xe0X\x8c7\t\xf7\xe0\xd8\xa8/x\xac\xdc\xc6q\x9cjYg6\x7f\xabXg\xd7\x08\x8c\x80\xb7\xa9\x03\xbci\xcc0H\xc1\xde\x18z\xeb\xb7\x15\x1f\xf8\xd1h\xf7\\\x92\xae\xe5\xfd\x1e&j=\xd1(\xb1'
+2024-07-02 23:25:15.494081 - b'%\xd3\xc9\xbc\xc9T\xb5\t0\x19\xb8M`H\xd1\x08\xe7$\xff\xdb\xbd\xfb\xc5|\xa3\xdd\xf8y,X\xa4\xcd\xcc\xbd\xd3\x973y=\xdd\x06\x05\x9e\xa0\xe7\xb4\xa9w\xea\x93\x14\xb4\xb0\xe4\xba\x07\x03\x19^\xf7\xc3x\xc0\xb7'
+2024-07-02 23:25:20.895931 - b'D\xf81j\xe6F\xc64\xdb\xaf""\xed\r\x85W_\\\x8a\xa3|\xacD\xed}\xaf\x1cq\xa5$\xc3\xf8=\xcf}Y\x16\xb2\n\x986=\xe7\xce\x08\x94}\xa6\xbb\xe6\x0bpV\x1b\x90\xe9\xb7\xe3\xe3\x9a\x17\xbb\xb8x'
