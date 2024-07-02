@@ -68,7 +68,7 @@ class UserManager:
                 VALUES (?, ?, ?, ?)
             ''', (username, hashed_password, salt, secret))
         return True
-    
+
     def get_salt(self, username):
         with sqlite3.connect(self.db_filename) as conn:
             cursor = conn.execute('''
@@ -91,7 +91,7 @@ class UserManager:
             row = cursor.fetchone()
             stored_password, salt = row
             return hashed_password == stored_password
-        
+
     def verify_otp(self, username, log_otp):
         with sqlite3.connect(self.db_filename) as conn:
             cursor = conn.execute('''
@@ -157,15 +157,15 @@ def handle_client(client_socket, client_address, user_manager):
             elif message.startswith("UPLOAD_FILE:"):
                 filename = message.split(":")[1]
                 threading.Thread(target=handle_file_download, args=(client_socket, filename)).start()
-                
+
 
             elif message.startswith("DOWNLOAD_FILE:"):
                 filename = message.split(":")[1]
                 threading.Thread(target=handle_file_download, args=(client_socket, filename)).start()
-                
+
 
             elif message.startswith("NEW_USER:"):
-                _, message = message.split(':') 
+                _, message = message.split(':')
                 response = f'{message} joined the chat'
                 username = message
                 with open(log_messages_file, 'a') as log_file:
@@ -228,7 +228,7 @@ def handle_file_download(client_socket, filename):
         client_socket.send(b"ERROR: File not found")
 
 
-def start_server(host='0.0.0.0', port=12345):
+def start_server(host='127.0.0.1', port=12345):
     user_manager = UserManager()
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -243,7 +243,7 @@ def start_server(host='0.0.0.0', port=12345):
 
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_cert_chain("../CERT_local/cert-server.pem","../CERT_local/cert-key.pem")
+    context.load_cert_chain("../CERT/cert-server.pem","../CERT/cert-key.pem")
 
     server_ssl = context.wrap_socket(server_socket, server_side=True)
 
