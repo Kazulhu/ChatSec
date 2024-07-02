@@ -1,7 +1,9 @@
 import rsa
 import datetime
 import sys
-from server import PRIVKEY
+from server import PRIVKEY  #If the server is constantly running
+
+PRIVKEY = "<your private key here>"
 
 # Chemin vers le fichier de log
 log_messages_file = 'log_messages.txt'
