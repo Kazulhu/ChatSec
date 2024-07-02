@@ -9,6 +9,7 @@ import ssl
 import pyargon2
 import os
 import shutil
+from messageTableManagement import *
 
 # Initialisation des logs
 log_connections_file = 'log_connections.txt'
@@ -186,9 +187,14 @@ def handle_client(client_socket, client_address, user_manager):
             elif message.startswith("DM:"):
                 _, sender, recipient, dm_content = message.split(":")
                 recipient_socket = find_client_socket(recipient)
-                print(recipient_socket)
                 if recipient_socket:
                     recipient_socket.send(f"DM:{sender}:{recipient}:{dm_content}".encode('utf-8'))
+
+            elif message.startswith("LOGOUT:"):
+                _, username = message.split(":")
+                del username_to_socket[username]
+                print(f"User logged out: {username}")
+                update_user_list()
 
 
             # Handle other messages and broadcast them to all clients
@@ -219,7 +225,6 @@ def handle_client(client_socket, client_address, user_manager):
             print(f'{datetime.datetime.now()} - Disconnection of {username} ({client_address[0]}:{client_address[1]})\n')
         else:
             log_disconnection(client_address)
-            print(f'Disconnected from {client_address[0]}:{client_address[1]}')
 
 def find_client_socket(username):
     if username in username_to_socket:
@@ -258,6 +263,7 @@ def broadcast_file_link(filename):
 
 def start_server(host='0.0.0.0', port=443):
     user_manager = UserManager()
+    message_manager = MessageTableManagement()
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
