@@ -7,6 +7,7 @@ import qrcode
 import secrets
 import ssl
 import pyargon2
+import rsa
 
 # Initialisation des logs
 log_connections_file = 'log_connections.txt'
@@ -17,6 +18,10 @@ log_login_file = 'log_login.txt'
 connected_clients = []
 username_to_address = {}
 clients_lock = threading.Lock()
+
+#cypher the logs messages
+(PUBKEY, PRIVKEY) = rsa.newkeys(512)
+
 
 # Function to log connections
 def log_connection(client_address):
@@ -36,7 +41,7 @@ def log_disconnection(client_address, username=None):
 # Function to log messages
 def log_message(message):
     with open(log_messages_file, 'a') as log_file:
-        log_file.write(f'{datetime.datetime.now()} - {message}\n')
+        log_file.write(f'{datetime.datetime.now()} - {rsa.encrypt(message,PUBKEY)}\n')
 
 # User management class
 class UserManager:
