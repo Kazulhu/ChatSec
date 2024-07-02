@@ -14,7 +14,6 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit, QPushButt
                              QStackedWidget, QFileDialog, QTextBrowser, QTabWidget)  # type: ignore
 from PyQt5.QtCore import pyqtSignal, Qt, QPoint, QByteArray, QSize  # type: ignore
 from PyQt5.QtGui import QPixmap, QTextCursor, QIcon  # type: ignore
-
 import pyttsx3
 
 
@@ -126,7 +125,7 @@ class LoginWindow(QWidget):
         password = self.input_password.text()
         otp = self.input_otp.text()
 
-        hashed_password, salt = hash_password(password)
+        #hashed_password, salt = hash_password(password)
 
         self.parent.client_ssl.send(f"LOGIN_USER:{username}".encode('utf-8'))
         response = self.parent.client_ssl.recv(1024).decode('utf-8')
@@ -434,7 +433,7 @@ class ChatWindow(QWidget):
         else:
             self.chat_area.append(message)
             if self.text_to_speech.is_enabled():
-                self.text_to_speech.speak(message.replace(':','said,',1))
+                self.text_to_speech.speak(message.replace(':','said, ',1))
 
     def toggle_text_to_speech(self):
         # Toggle text to speech
