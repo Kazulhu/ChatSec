@@ -6,14 +6,15 @@ import pyargon2 # type: ignore
 import pyotp    # type: ignore
 import qrcode   # type: ignore
 import ssl
+import os
 from time import sleep
 from io import BytesIO
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QTextEdit, QListWidget, QMenu, QAction, QMessageBox, QStackedWidget    # type: ignore
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QTextEdit, QListWidget, QMenu, QAction, QMessageBox, QStackedWidget, QFileDialog, QTextBrowser    # type: ignore
 from PyQt5.QtCore import pyqtSignal, Qt, QPoint, QByteArray # type: ignore
-from PyQt5.QtGui import QPixmap # type: ignore
+from PyQt5.QtGui import QPixmap, QTextCursor # type: ignore
 
 # Global variables
-SERVER_HOST = '192.168.1.175'
+SERVER_HOST = '127.0.0.1'
 SERVER_PORT = 12345
 
 # Function to hash passwords with Argon2, salt, and pepper
@@ -32,7 +33,7 @@ class ClientApp(QStackedWidget):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        self.context.load_verify_locations("../CA/ca-cert.pem")
+        self.context.load_verify_locations("../CA_local/ca-cert.pem")
 
         self.client_ssl = self.context.wrap_socket(self.client_socket, server_hostname=SERVER_HOST)
         
@@ -264,8 +265,9 @@ class ChatWindow(QWidget):
 
         self.chat_layout = QHBoxLayout()
 
-        self.chat_area = QTextEdit(self)
+        self.chat_area = QTextBrowser(self)
         self.chat_area.setReadOnly(True)
+        self.chat_area.anchorClicked.connect(self.handle_link_click)
         self.chat_layout.addWidget(self.chat_area)
 
         self.users_list = QListWidget(self)
@@ -285,15 +287,43 @@ class ChatWindow(QWidget):
         self.send_button.clicked.connect(self.send_message)
         self.layout.addWidget(self.send_button)
 
+        self.upload_button = QPushButton('Upload File', self)
+        self.upload_button.clicked.connect(self.upload_file)
+        self.layout.addWidget(self.upload_button)
+
+        if not os.path.exists('download'):
+            os.makedirs('download')
+
         self.setLayout(self.layout)
         self.setGeometry(100, 100, 800, 600)
 
         self.message_received.connect(self.display_message)
         self.users_list_updated.connect(self.update_users_list)
+        
 
         threading.Thread(target=self.receive_messages, daemon=True).start()
 
         self.client_ssl.send(f"NEW_USER:{self.username}".encode('utf-8'))
+
+    # Send file
+    def upload_file(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, 'Open file', '', 'All Files (*)')
+        if file_path:
+            filename = os.path.basename(file_path)
+            file_size = os.path.getsize(file_path)
+            threading.Thread(target=self._upload_file_thread, args=(file_path, filename)).start()
+
+    def _upload_file_thread(self, file_path, filename):
+        self.client_ssl.send(f'UPLOAD_FILE:{filename}'.encode('utf-8'))
+
+        with open(file_path, 'rb') as f:
+            while True:
+                chunk = f.read(1024)
+                if not chunk:
+                    break
+                self.client_ssl.send(chunk)
+        self.client_ssl.send(b"END_OF_FILE")
+    
 
     def send_message(self):
         message = self.message_input.toPlainText()
@@ -311,10 +341,35 @@ class ChatWindow(QWidget):
                     self.users_list_updated.emit(users)
                 elif message.startswith("DM:"):
                     self.message_received.emit(message)
+                elif message.startswith("FILE_LINK:"):
+                    filename = message.split(":")[1]
+                    self.message_received.emit(f'<a href="download:{filename}">{filename}</a>')
                 else:
                     self.message_received.emit(message)
             except:
                 break
+
+    # Handle the link click
+    def handle_link_click(self, url):
+        if url.startswith("download:"):
+            filename = url[len("download:"):]
+            threading.Thread(target=self._download_file_thread, args=(filename,)).start()
+        
+    def _download_file_thread(self, filename):
+        self.client_ssl.send(f'DOWNLOAD_FILE:{filename}'.encode('utf-8'))
+        filepath = os.path.join('download', filename)
+
+        with open(filepath, 'wb') as f:
+            while True:
+                chunk = self.client_ssl.recv(1024)
+                if chunk == b"END_OF_FILE":
+                    break
+                f.write(chunk)
+
+        QMessageBox.information(self, 'Download Complete', f'File {filename} downloaded successfully.')
+    
+
+
 
     def display_message(self, message):
         if message.startswith("DM:"):
@@ -336,27 +391,27 @@ class ChatWindow(QWidget):
         if item is not None:
             menu = QMenu(self)
             report_action = QAction('Report', self)
-            dm_action = QAction('Send DM', self)
-
             report_action.triggered.connect(lambda: self.report_user(item.text()))
-            dm_action.triggered.connect(lambda: self.open_dm(item.text()))
-
-            menu.addAction(dm_action)
             menu.addAction(report_action)
+
+            dm_action = QAction('Send DM', self)
+            dm_action.triggered.connect(lambda: self.open_dm(item.text()))
+            menu.addAction(dm_action)
+
             menu.exec_(self.users_list.mapToGlobal(pos))
 
     def report_user(self, username):
         QMessageBox.information(self, 'Report', f'User {username} has been reported.')
 
     def open_dm(self, recipient, initial_message=None):
-        if recipient not in self.dm_windows:
+        if recipient in self.dm_windows:
+            dm_window = self.dm_windows[recipient]
+        else:
             dm_window = DMWindow(self.username, recipient, self.client_ssl)
             self.dm_windows[recipient] = dm_window
-            dm_window.show()
-            if initial_message:
-                dm_window.display_message(initial_message)
-        else:
-            self.dm_windows[recipient].show()
+        if initial_message:
+            dm_window.display_message(initial_message)
+        dm_window.show()
 
 # Direct Message (DM) window
 class DMWindow(QWidget):
@@ -375,7 +430,8 @@ class DMWindow(QWidget):
         self.dm_area.setReadOnly(True)
         self.layout.addWidget(self.dm_area)
 
-        self.message_input = QLineEdit(self)
+        self.message_input = EnterToSubmitTextEdit()
+        self.message_input.enterPressed.connect(self.send_message)
         self.message_input.setPlaceholderText('Type your message here...')
         self.layout.addWidget(self.message_input)
 
