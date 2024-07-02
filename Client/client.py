@@ -69,7 +69,7 @@ class ClientApp(QStackedWidget):
 
         self.setCurrentIndex(0)
         self.setWindowTitle('Secure Sphere')
-        self.setGeometry(100, 100, 500, 400)
+        self.setGeometry(100, 100, 750, 500)
 
         self.client_ssl.connect((SERVER_HOST, SERVER_PORT))
 
@@ -283,6 +283,8 @@ class ChatWindow(QWidget):
         self.layout = QVBoxLayout()
 
         self.dm_tab_widget = QTabWidget()
+        self.dm_tab_widget.currentChanged.connect(self.tab_changed)
+        self.globalchat = True
         self.layout.addWidget(self.dm_tab_widget)
 
         self.global_chat_tab = QWidget()
@@ -363,6 +365,13 @@ class ChatWindow(QWidget):
 
         self.client_ssl.send(f"NEW_USER:{self.username}".encode('utf-8'))
 
+    def tab_changed(self, index):
+        current_widget = self.dm_tab_widget.widget(index)
+        if isinstance(current_widget, DMTab):
+            recipient = current_widget.recipient
+            self.globalchat = False
+        if self.dm_tab_widget.tabText(index) == "Global Chat":
+            self.globalchat = True
     
     def logout(self):
         self.client_ssl.send(f"LOGOUT:{self.username}".encode('utf-8'))
@@ -390,7 +399,7 @@ class ChatWindow(QWidget):
         message = self.message_input.toPlainText()
         if message:
             self.message_input.clear()
-        if self.users_list.currentItem():
+        if self.globalchat == False:
             recipient = self.users_list.currentItem().text()
             if recipient:
                 dm_message = f"DM:{self.username}:{recipient}:{message}"
@@ -427,7 +436,7 @@ class ChatWindow(QWidget):
             _, sender, recipient, dm_message = message.split(":", 3)
             if recipient == self.username:
                 if sender in self.dm_tabs:
-                    self.dm_tabs[sender].display_message(f"{sender}: {dm_message}")
+                    self.dm_tabs[sender].display_dm(f"{sender}: {dm_message}")
                 else:
                     self.open_dm(sender, initial_message=f"{sender}: {dm_message}")
         else:
@@ -479,7 +488,7 @@ class ChatWindow(QWidget):
             self.dm_tabs[recipient] = dm_widget
             self.dm_tab_widget.addTab(dm_widget, recipient)
         if initial_message:
-            dm_widget.display_message(initial_message)
+            dm_widget.display_dm(initial_message)
         self.dm_tab_widget.setCurrentWidget(dm_widget)
 
 class DMTab(QWidget):
@@ -510,13 +519,14 @@ class DMTab(QWidget):
         message = self.message_input.text()
         if message:
             self.message_input.clear()
+            self.display_dm(f"{self.sender}:{message}")
             dm_message = f"DM:{self.sender}:{self.recipient}:{message}"
             try:
                 self.client_ssl.send(dm_message.encode('utf-8'))
             except Exception as e:
                 print(f"Error sending message: {e}")
 
-    def display_message(self, message):
+    def display_dm(self, message):
         self.dm_area.append(message)
 
 if __name__ == '__main__':
