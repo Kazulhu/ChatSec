@@ -6,6 +6,7 @@ import pyargon2  # type: ignore
 import pyotp  # type: ignore
 import qrcode  # type: ignore
 import ssl
+import re
 import os
 from time import sleep
 from io import BytesIO
@@ -55,7 +56,7 @@ class ClientApp(QStackedWidget):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        self.context.load_verify_locations("../CA_local/ca-cert.pem")
+        self.context.load_verify_locations("../CA/ca-cert.pem")
 
         self.client_ssl = self.context.wrap_socket(self.client_socket, server_hostname=SERVER_HOST)
 
@@ -234,6 +235,14 @@ class RegisterWindow(QWidget):
 
         if password != confirm_password:
             QMessageBox.warning(self, 'Error', 'Passwords do not match')
+            return
+        
+        if len(password)<8:
+            QMessageBox.warning(self, 'Error', 'Passwords must be at least 8 characters')
+            return
+        
+        if not(re.findall("[a-zA-Z]",password)) or not(re.findall("[0-9]",password)) or not(re.findall("[,?;.:/!§%^¨$£¤*µ&é#_°@=+]",password)):
+            QMessageBox.warning(self, 'Error', 'Passwords must contains upper and lower case letter, number and at least one special character')
             return
 
         hashed_password, salt = hash_password(password)
