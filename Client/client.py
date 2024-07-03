@@ -6,6 +6,7 @@ import pyargon2  # type: ignore
 import pyotp  # type: ignore
 import qrcode  # type: ignore
 import ssl
+import re
 import os
 from time import sleep
 from io import BytesIO
