@@ -26,10 +26,8 @@ username_to_socket = {}
 clients_lock = threading.Lock()
 
 def save_private_key(private_key, filename='message_private_key.pem'):
-    index = 1
     while os.path.exists(filename):
-        filename = f"{os.path.splitext(filename)[0]}_{index}.pem"
-        index += 1
+        filename = f"{os.path.splitext(filename)[0]}_{datetime}.pem"
     
     with open(filename, 'wb') as f:
         f.write(private_key.save_pkcs1())
