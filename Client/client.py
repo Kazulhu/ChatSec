@@ -6,13 +6,12 @@ import pyargon2  # type: ignore
 import pyotp  # type: ignore
 import qrcode  # type: ignore
 import ssl
-import re
 import os
 from time import sleep
 from io import BytesIO
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout,
                              QHBoxLayout, QTextEdit, QListWidget, QMenu, QAction, QMessageBox,
-                             QStackedWidget, QFileDialog, QTextBrowser, QTabWidget)  # type: ignore
+                             QStackedWidget, QFileDialog, QTextBrowser, QTabWidget, QFrame)  # type: ignore
 from PyQt5.QtCore import pyqtSignal, Qt, QPoint, QByteArray, QSize  # type: ignore
 from PyQt5.QtGui import QPixmap, QTextCursor, QIcon  # type: ignore
 import pyttsx3
@@ -288,18 +287,69 @@ class ChatWindow(QWidget):
         self.dm_tabs = {}
 
         self.setWindowTitle(f'Chat - {self.username}')
+        self.setStyleSheet("background-color: #f4f3f8;")
 
-        self.layout = QVBoxLayout()
+        self.main_layout = QVBoxLayout()
+        self.main_layout.setContentsMargins(20, 20, 20, 20)
+        self.setLayout(self.main_layout)
+
+        self.top_layout = QHBoxLayout()
+        self.main_layout.addLayout(self.top_layout)
+
+        log_out = QIcon('../assets/log_out.png')
+        self.logout_button = QPushButton(self)
+        self.logout_button.clicked.connect(self.logout)
+        self.logout_button.setFixedSize(48, 48)
+        self.logout_button.setIconSize(QSize(30, 30))
+        self.logout_button.setIcon(log_out)
+        self.logout_button.setStyleSheet("""
+                                    QPushButton {
+                                        border: 2px solid #464a59; 
+                                        border-radius: 12px;
+                                        background-color: #f4f3f8; 
+                                    }
+                                    QPushButton:hover {
+                                        background-color: #c1c6c9;
+                                    }
+                                """)
+        self.top_layout.addStretch(1)
+        self.top_layout.addWidget(self.logout_button, alignment=Qt.AlignTop | Qt.AlignRight)
 
         self.dm_tab_widget = QTabWidget()
+        self.dm_tab_widget.setStyleSheet("""
+                    QTabBar::tab:selected {
+                        background-color: #38B6FF;
+                        color: #ffffff;
+                        border-bottom: 1px solid #38B6FF; 
+                    }
+                    QTabWidget::pane { 
+                        border: none; 
+                    } 
+                    QTabBar::tab { 
+                        font-size: 15px; 
+                        height: 20px; 
+                        width: 100px; 
+                        padding: 8px; 
+                        border-bottom: 1px solid #f0f0f0; 
+                        background-color: #ffffff;
+                        border-top-right-radius: 10px;
+                        border-top-left-radius: 10px;
+                    }
+                    QTabBar::tab:hover {
+                        background-color: #c1c6c9;
+                    }
+                    QTabBar::tab:selected:hover {
+                        background-color: #38B6FF;
+                    }""")
         self.dm_tab_widget.currentChanged.connect(self.tab_changed)
         self.globalchat = True
-        self.layout.addWidget(self.dm_tab_widget)
+        self.main_layout.addWidget(self.dm_tab_widget)
 
         self.global_chat_tab = QWidget()
         self.global_layout = QVBoxLayout()
         self.global_chat_tab.setLayout(self.global_layout)
         self.dm_tab_widget.addTab(self.global_chat_tab, "Global Chat")
+        self.global_chat_tab.setStyleSheet("border-top: 2px solid #38B6FF;")
 
         self.chat_layout = QHBoxLayout()
 
@@ -307,34 +357,85 @@ class ChatWindow(QWidget):
         self.chat_area = QTextBrowser(self)
         self.chat_area.setReadOnly(True)
         self.chat_area.anchorClicked.connect(self.handle_link_click)
+        self.chat_area.setStyleSheet("""
+                    QTextEdit {
+                        background-color: #f4f3f8;  /* Set the background color of the chat (assuming it's a QTextEdit) */
+                        border-right: 1px solid #c1c6c9;  /* Set the left border color to match the shared border with the user list */
+                        border-top: none;
+                        border-bottom: none;
+                        border-left: none;
+                    }
+                """)
         self.chat_layout.addWidget(self.chat_area)
 
         # Right side: users list
         self.users_list = QListWidget(self)
         self.users_list.setMaximumWidth(150)
         self.users_list.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.users_list.setStyleSheet("""
+                    QListWidget {
+                        background-color: #f4f3f8;  /* Set the background color of the user list */
+                        border: none;
+                    }
+                    QListWidget::item:hover {
+                        background-color: #989eb5;  /* Set the hover background color of the user list items to #989eb5 */
+                    }
+                """)
         self.users_list.customContextMenuRequested.connect(self.show_user_menu)
         self.chat_layout.addWidget(self.users_list)
 
         self.global_layout.addLayout(self.chat_layout)
 
-        self.input_layout = QHBoxLayout()
+        self.global_layout.addLayout(self.chat_layout)
+
+        self.input_frame = QFrame()
+        self.input_frame.setStyleSheet("background-color: #ffffff; padding: 5px; border-radius: 10px; border: none;")
+        self.input_layout = QHBoxLayout(self.input_frame)
+
+        tts_icon = QIcon('../assets/tts_dark.png')
+        self.tts_button = QPushButton()
+        self.tts_button.setIcon(tts_icon)
+        self.tts_button.setIconSize(QSize(48, 48))
+        self.tts_button.setFixedSize(48, 48)
+        self.tts_button.setStyleSheet("""
+                    QPushButton {
+                        border: none;
+                        border-radius: 12px;
+                        background-color: #ffffff;
+                    }
+                    QPushButton:hover {
+                        background-color: #38B6FF;
+                        icon: url(../assets/tts_light.png);
+                    }
+                """)
+        self.tts_button.clicked.connect(self.toggle_text_to_speech)
+        self.input_layout.addWidget(self.tts_button)
 
         self.message_input = EnterToSubmitTextEdit()
         self.message_input.enterPressed.connect(self.send_message)
         self.message_input.setPlaceholderText('Type your message here...')
+        self.message_input.setStyleSheet(
+            "border-radius: 10px; padding: 10px; font: 14px Roboto; background-color: #f4f3f8; border: none;")
         self.input_layout.addWidget(self.message_input)
 
-        # Horizontal layout for buttons
-        self.buttons_layout = QHBoxLayout()
-
-        upload_icon = QIcon('../assets/joindre.png')
+        upload_icon = QIcon('../assets/joindre_dark.png')
         self.upload_button = QPushButton()
         self.upload_button.setIcon(upload_icon)
         self.upload_button.setIconSize(QSize(48, 48))
         self.upload_button.setFixedSize(48, 48)
         self.upload_button.clicked.connect(self.upload_file)
-        self.buttons_layout.addWidget(self.upload_button)
+        self.upload_button.setStyleSheet("""
+                    QPushButton {
+                        border: none;
+                        border-radius: 12px;
+                        background-color: #ffffff;
+                    }
+                    QPushButton:hover {
+                        background-color: #38B6FF;
+                        icon: url(../assets/joindre_light.png);
+                    }
+                """)
+        self.input_layout.addWidget(self.upload_button)
 
         send_icon = QIcon('../assets/send.png')
         self.send_button = QPushButton()
@@ -342,21 +443,19 @@ class ChatWindow(QWidget):
         self.send_button.setIconSize(QSize(48, 48))
         self.send_button.setFixedSize(48, 48)
         self.send_button.clicked.connect(self.send_message)
-        self.buttons_layout.addWidget(self.send_button)
+        self.send_button.setStyleSheet("""
+                    QPushButton {
+                        border: none;
+                        border-radius: 12px;
+                        background-color: #38B6FF; 
+                    }
+                    QPushButton:hover {
+                        background-color: #2F5F9B;
+                    }
+                """)
+        self.input_layout.addWidget(self.send_button)
 
-        self.buttons_layout.addStretch(25)
-
-        self.input_layout.addLayout(self.buttons_layout)
-
-        self.global_layout.addLayout(self.input_layout)
-
-        self.text_to_speech_button = QPushButton('Text to Speech', self)
-        self.text_to_speech_button.clicked.connect(self.toggle_text_to_speech)
-        self.global_layout.addWidget(self.text_to_speech_button, alignment=Qt.AlignBottom | Qt.AlignLeft)
-
-        self.logout_button = QPushButton('Logout', self)
-        self.logout_button.clicked.connect(self.logout)
-        self.global_layout.addWidget(self.logout_button, alignment=Qt.AlignBottom | Qt.AlignLeft)
+        self.global_layout.addWidget(self.input_frame)
 
         # Initialize TextToSpeech engine
         self.text_to_speech = TextToSpeech()
@@ -364,7 +463,6 @@ class ChatWindow(QWidget):
         if not os.path.exists('download'):
             os.makedirs('download')
 
-        self.setLayout(self.layout)
         self.setGeometry(100, 100, 800, 600)
 
         self.message_received.connect(self.display_message)
@@ -457,10 +555,10 @@ class ChatWindow(QWidget):
         # Toggle text to speech
         if self.text_to_speech.is_enabled():
             self.text_to_speech.set_voice_enabled(False)
-            self.text_to_speech_button.setStyleSheet('color: black;')
+            self.tts_button.setStyleSheet('color: black;')
         else:
             self.text_to_speech.set_voice_enabled(True)
-            self.text_to_speech_button.setStyleSheet('color: green;')
+            self.tts_button.setStyleSheet('color: green;')
             # Read the last message aloud if possible
             last_message = self.chat_area.toPlainText().split('\n')[-1]  # Get the last message displayed
             if last_message.strip():
