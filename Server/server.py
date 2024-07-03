@@ -27,7 +27,7 @@ clients_lock = threading.Lock()
 
 def save_private_key(private_key, filename='message_private_key.pem'):
     while os.path.exists(filename):
-        filename = f"{os.path.splitext(filename)[0]}_{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.pem"
+        filename = f"{os.path.splitext(filename)[0]}_{datetime.datetime.now().strftime("%Y%m%d")}.pem"
     
     with open(filename, 'wb') as f:
         f.write(private_key.save_pkcs1())
