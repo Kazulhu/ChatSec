@@ -291,7 +291,7 @@ def start_server(host='0.0.0.0', port=443):
 
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_cert_chain("../CERT_local/cert-server.pem","../CERT_local/cert-key.pem")
+    context.load_cert_chain("../CERT/cert-server.pem","../CERT/cert-key.pem")
 
     server_ssl = context.wrap_socket(server_socket, server_side=True)
 
