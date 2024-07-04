@@ -96,6 +96,7 @@ une gestion fiable des droits et des connexions.
 
 ## Utilisation
 1- Assurez vous d'avoir une application d'authentificator d'installer sur votre téléphone, par exemple Authy ou Google Authenticator
+
 2- Lancer le serveur depuis un terminal :
   - Déplacer vous jusqu'à l'emplacement du fichier server.py puis exécutez:
     ```python server.py```
