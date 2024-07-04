@@ -107,6 +107,8 @@ une gestion fiable des droits et des connexions.
     ```python client.py```
     La fenêtre de l'application devrait apparaitre
 
+4- A vous de vous inscrire pour pouvoir utiliser l'application
+
 
 ## Release Note
 **v1.0.1** - 04/07/2024
