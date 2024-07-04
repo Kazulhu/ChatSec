@@ -30,6 +30,7 @@ une gestion fiable des droits et des connexions.
   - Voir les messages
   - Envoyer des messages privés (DMs)
   - Se déconnecter
+
 2- Serveur :
   - Lancement de l'application :
       - Envoi de clef public et certificat au client pour communication sécurisé
