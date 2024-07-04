@@ -82,7 +82,7 @@ une gestion fiable des droits et des connexions.
            - Ouvrez l'application notepad et écrivez:
              ```subjectAltName=IP:127.0.0.1, IP:<ip-du-serveur-sur-votre-réseau>```
          - Revenez au terminal :
-         ```openssl x509 -req -sha256 -days 365 -in cert-query.csr -CA ../CA/ca-cert.pem -CAkey ../CA/ca-key.pem -out cert-server.pem -extfile extfile.cnf -CAcreateserial```
+           - ```openssl x509 -req -sha256 -days 365 -in cert-query.csr -CA ../CA/ca-cert.pem -CAkey ../CA/ca-key.pem -out cert-server.pem -extfile extfile.cnf -CAcreateserial```
          - Ouvrez un powershell administrateur (dans le dossier CA):
            ```Import-Certificate -FilePath .\ca-cert.pem -CertStoreLocation Cert:\LocalMachine\Root```
      - Modifier dans le code du client l'adresse ip cible par celle du serveur (que vous avez du mettre dans extfile.cnf)
