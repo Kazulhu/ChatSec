@@ -99,11 +99,12 @@ une gestion fiable des droits et des connexions.
 2- Lancer le serveur depuis un terminal :
   - Déplacer vous jusqu'à l'emplacement du fichier server.py puis exécutez:
     ```python server.py```
-  - Un message précisant l'écoute du serveur devrait apparaitre dans le terminal
+    Un message précisant l'écoute du serveur devrait apparaitre dans le terminal
+
 3- Lancer l'application depuis un terminal :
   - Déplacer vous jusqu'à l'emplacement du fichier client.py puis exécutez:
     ```python client.py```
-  - La fenêtre de l'application devrait apparaitre
+    La fenêtre de l'application devrait apparaitre
 
 
 ## Release Note
