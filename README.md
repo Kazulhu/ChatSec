@@ -94,11 +94,12 @@ une gestion fiable des droits et des connexions.
        ```pip install -r requirements.txt```
 
 ## Utilisation
-1- Lancer le serveur depuis un terminal :
+1- Assurez vous d'avoir une application d'authentificator d'installer sur votre téléphone, par exemple Authy ou Google Authenticator
+2- Lancer le serveur depuis un terminal :
   - Déplacer vous jusqu'à l'emplacement du fichier server.py puis exécutez:
     ```python server.py```
   - Un message précisant l'écoute du serveur devrait apparaitre dans le terminal
-2- Lancer l'application depuis un terminal :
+3- Lancer l'application depuis un terminal :
   - Déplacer vous jusqu'à l'emplacement du fichier client.py puis exécutez:
     ```python client.py```
   - La fenêtre de l'application devrait apparaitre
