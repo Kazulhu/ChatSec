@@ -128,9 +128,42 @@ une gestion fiable des droits et des connexions.
 
 
 ## Release Note
-**v1.0.1** - 04/07/2024
+**v1.0.1** - 03/07/2024
+- Correction d'un bug dans l'enregistrement
+- Ajout de quelques feuilles de style 
 - Première Release officielle 
 - Fonctionnalité basique
 - Mise en place de la documentation initiale
 
+**v0.3.4** - 02/07/2024
+- Cryptage des logs
+- Ajout de la synthèse vocale dans le chat principal
+
+**v0.3.3** - 01/07/2024
+- Suppression des messages dans l'historique après un jour
+- Correction d'un bug dans la création d'une table dans la base de données
+
+**v0.3.2** - 28/06/2024
+- Mise à jour de l'authentification multi-facteurs
+
+**v0.3.1** - 26/06/2024
+- DMs possible
+- Mise à jour du cryptage
+- Création des logs
+- Création d'un historique 
+
+**v0.2.3** - 24/06/2024
+- Authentification multifacteurs possible à l'aide d'un code QR et d'un OTP (mot de passe à usage unique)
+
+**v0.2.2** - 17/06/2024
+- Authentification mise à jour : Les mots de passe sont désormais hachés avec argon2
+
+**v0.2.1** - 15/06/2024
+- Authentification ajoutée : pages de connexion et d'enregistrement ajoutées
+- Base de données créée
+- Encryption de la communication entre le socket (TLS)
+  
+**v0.1** - 09/06/2024
+- Serveur et client créés
+- Le chat global peut être utilisé (socket)
 
